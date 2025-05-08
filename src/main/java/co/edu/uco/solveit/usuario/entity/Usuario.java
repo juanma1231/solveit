@@ -36,6 +36,18 @@ public class Usuario implements UserDetails {
     private String nombreCompleto;
 
     @Column
+    private String numeroIdentificacion;
+
+    @Column
+    private String tipoIdentificacion;
+
+    @Column
+    private String descripcionPerfil;
+
+    @Column
+    private String telefono;
+
+    @Column
     private LocalDateTime fechaCreacion;
 
     @Column

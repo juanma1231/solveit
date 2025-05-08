@@ -4,6 +4,10 @@ public record RegistroRequest(
         String username,
         String password,
         String email,
-        String nombreCompleto) {
+        String nombreCompleto,
+        String numeroIdentificacion,
+        String tipoIdentificacion,
+        String descripcionPerfil,
+        String telefono) {
 
 }

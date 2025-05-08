@@ -5,6 +5,10 @@ public record ActualizarUsuarioRequest(
         String nombreCompleto,
         String email,
         String currentPassword,
-        String newPassword
+        String newPassword,
+        String numeroIdentificacion,
+        String tipoIdentificacion,
+        String descripcionPerfil,
+        String telefono
 ) {
 }

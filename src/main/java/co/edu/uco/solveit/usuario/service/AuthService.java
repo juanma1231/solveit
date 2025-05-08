@@ -39,6 +39,10 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.password()))
                 .email(request.email())
                 .nombreCompleto(request.nombreCompleto())
+                .numeroIdentificacion(request.numeroIdentificacion())
+                .tipoIdentificacion(request.tipoIdentificacion())
+                .descripcionPerfil(request.descripcionPerfil())
+                .telefono(request.telefono())
                 .role(Role.USER)
                 .build();
 
@@ -51,6 +55,10 @@ public class AuthService {
                 .username(usuario.getUsername())
                 .email(usuario.getEmail())
                 .nombreCompleto(usuario.getNombreCompleto())
+                .numeroIdentificacion(usuario.getNumeroIdentificacion())
+                .tipoIdentificacion(usuario.getTipoIdentificacion())
+                .descripcionPerfil(usuario.getDescripcionPerfil())
+                .telefono(usuario.getTelefono())
                 .build();
     }
 
@@ -75,6 +83,10 @@ public class AuthService {
                 .username(usuario.getUsername())
                 .email(usuario.getEmail())
                 .nombreCompleto(usuario.getNombreCompleto())
+                .numeroIdentificacion(usuario.getNumeroIdentificacion())
+                .tipoIdentificacion(usuario.getTipoIdentificacion())
+                .descripcionPerfil(usuario.getDescripcionPerfil())
+                .telefono(usuario.getTelefono())
                 .build();
     }
 

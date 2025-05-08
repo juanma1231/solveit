@@ -7,5 +7,9 @@ public record AuthResponse(
         String token,
         String username,
         String email,
-        String nombreCompleto) {
+        String nombreCompleto,
+        String numeroIdentificacion,
+        String tipoIdentificacion,
+        String descripcionPerfil,
+        String telefono) {
 }

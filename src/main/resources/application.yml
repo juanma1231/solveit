@@ -1,23 +1,18 @@
 server:
-  port: 9000
+  port: 9595
 
 spring:
   application.name: solveit
-    
-  threads.virtual.enabled: true
 
+  threads.virtual.enabled: true
+  jpa:
+    generate-ddl: true
 
   datasource:
-    url: ${url_bd_postgres}
-    username: ${username_postgres}
-    password: ${password_postgres}
+    url: localhost:3306
+    username: myuser
+    password: verysecret
     driver-class-name: com.mysql.cj.jdbc.Driver
-  liquibase:
-    url: ${url_bd_postgres}
-    user: ${username_postgres}
-    password: ${password_postgres}
-    enabled: true
-    change-log: db/changelog/db.changelog-master.yaml
 
 
 management:

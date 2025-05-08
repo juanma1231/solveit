@@ -41,9 +41,25 @@ public class UsuarioService {
             usuario.setEmail(request.email());
         }
 
+        if (request.numeroIdentificacion() != null && !request.numeroIdentificacion().isEmpty()) {
+            usuario.setNumeroIdentificacion(request.numeroIdentificacion());
+        }
+
+        if (request.tipoIdentificacion() != null && !request.tipoIdentificacion().isEmpty()) {
+            usuario.setTipoIdentificacion(request.tipoIdentificacion());
+        }
+
+        if (request.descripcionPerfil() != null && !request.descripcionPerfil().isEmpty()) {
+            usuario.setDescripcionPerfil(request.descripcionPerfil());
+        }
+
+        if (request.telefono() != null && !request.telefono().isEmpty()) {
+            usuario.setTelefono(request.telefono());
+        }
+
         if (request.currentPassword() != null && !request.currentPassword().isEmpty()
                 && request.newPassword() != null && !request.newPassword().isEmpty()) {
-            
+
             // Verificar contraseña actual
             if (!passwordEncoder.matches(request.currentPassword(), usuario.getPassword())) {
                 throw new RuntimeException("La contraseña actual es incorrecta");

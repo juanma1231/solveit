@@ -6,7 +6,6 @@ import co.edu.uco.solveit.usuario.dto.ResetPasswordRequest;
 import co.edu.uco.solveit.usuario.dto.SolicitudResetPasswordRequest;
 import co.edu.uco.solveit.usuario.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
