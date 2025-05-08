@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.usuario.exception;
 
+import co.edu.uco.solveit.poliza.exception.PolizaException;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,15 @@ public class GlobalExceptionHandler {
                 .success(false)
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PolizaException.class)
+    public ResponseEntity<MessageResponse> handlePolizaException(PolizaException ex, WebRequest request) {
+        MessageResponse errorResponse = MessageResponse.builder()
+                .message(ex.getMessage())
+                .success(false)
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
