@@ -1,0 +1,31 @@
+server:
+  port: 9000
+
+spring:
+  application.name: solveit
+    
+  threads.virtual.enabled: true
+
+
+  datasource:
+    url: ${url_bd_postgres}
+    username: ${username_postgres}
+    password: ${password_postgres}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  liquibase:
+    url: ${url_bd_postgres}
+    user: ${username_postgres}
+    password: ${password_postgres}
+    enabled: true
+    change-log: db/changelog/db.changelog-master.yaml
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          loggers,
+          metrics,
+          health,
+          info
