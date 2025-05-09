@@ -7,11 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReporteRepository extends JpaRepository<Reporte, Long> {
-    List<Reporte> findByPublicacion(Publicacion publicacion);
+
     List<Reporte> findByUsuario(Usuario usuario);
     List<Reporte> findByProcesado(boolean procesado);
-    long countByPublicacion(Publicacion publicacion);
+    Optional<Reporte> findByPublicacion_Id(Long publicacionId);
+    long countByPublicacion_Id(Long publicacionId);
 }

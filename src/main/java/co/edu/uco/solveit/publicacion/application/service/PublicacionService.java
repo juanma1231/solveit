@@ -1,25 +1,26 @@
 package co.edu.uco.solveit.publicacion.application.service;
 
+import co.edu.uco.solveit.publicacion.application.dto.ActualizarPublicacionRequest;
+import co.edu.uco.solveit.publicacion.application.dto.CrearPublicacionRequest;
+import co.edu.uco.solveit.publicacion.application.dto.PublicacionResponse;
+import co.edu.uco.solveit.publicacion.application.dto.ReportarPublicacionRequest;
 import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
+import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
+import co.edu.uco.solveit.publicacion.domain.model.Publicacion;
+import co.edu.uco.solveit.publicacion.domain.model.Reporte;
+import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
+import co.edu.uco.solveit.publicacion.domain.model.Zona;
 import co.edu.uco.solveit.publicacion.domain.port.in.PublicacionUseCase;
 import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.port.out.ReporteRepositoryPort;
+import co.edu.uco.solveit.usuario.UsuarioApi;
 import co.edu.uco.solveit.publicacion.domain.port.out.ZonaRepositoryPort;
-import co.edu.uco.solveit.publicacion.dto.ActualizarPublicacionRequest;
-import co.edu.uco.solveit.publicacion.dto.CrearPublicacionRequest;
-import co.edu.uco.solveit.publicacion.dto.PublicacionResponse;
-import co.edu.uco.solveit.publicacion.dto.ReportarPublicacionRequest;
-import co.edu.uco.solveit.publicacion.entity.*;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
-import co.edu.uco.solveit.usuario.entity.Usuario;
-import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +29,12 @@ public class PublicacionService implements PublicacionUseCase {
     private final PublicacionRepositoryPort publicacionRepositoryPort;
     private final ZonaRepositoryPort zonaRepositoryPort;
     private final ReporteRepositoryPort reporteRepositoryPort;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioApi usuarioApi;
 
     @Override
     public PublicacionResponse crearPublicacion(CrearPublicacionRequest request) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        Long usuarioId = usuarioApi.getCurrentUserId();
+        String nombreUsuario = usuarioApi.getCurrentUserFullName();
 
         Zona zona = zonaRepositoryPort.findById(request.zonaId())
                 .orElseThrow(() -> new PublicacionException("Zona no encontrada"));
@@ -42,9 +42,11 @@ public class PublicacionService implements PublicacionUseCase {
         Publicacion publicacion = Publicacion.builder()
                 .titulo(request.titulo())
                 .descripcion(request.descripcion())
-                .usuario(usuario)
+                .usuarioId(usuarioId)
+                .nombreUsuario(nombreUsuario)
                 .tipoPublicacion(request.tipoPublicacion())
                 .categoriaServicio(request.categoriaServicio())
+                .zonaId(zona.getId())
                 .zona(zona)
                 .estado(EstadoPublicacion.PUBLICADA)
                 .build();
@@ -55,14 +57,12 @@ public class PublicacionService implements PublicacionUseCase {
 
     @Override
     public PublicacionResponse actualizarPublicacion(Long id, ActualizarPublicacionRequest request) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        Long usuarioId = usuarioApi.getCurrentUserId();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(id)
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
 
-        if (!publicacion.getUsuario().getId().equals(usuario.getId())) {
+        if (!publicacion.getUsuarioId().equals(usuarioId)) {
             throw new PublicacionException("No tienes permiso para actualizar esta publicación");
         }
 
@@ -78,6 +78,7 @@ public class PublicacionService implements PublicacionUseCase {
         publicacion.setDescripcion(request.descripcion());
         publicacion.setTipoPublicacion(request.tipoPublicacion());
         publicacion.setCategoriaServicio(request.categoriaServicio());
+        publicacion.setZonaId(zona.getId());
         publicacion.setZona(zona);
 
         Publicacion publicacionActualizada = publicacionRepositoryPort.save(publicacion);
@@ -102,31 +103,27 @@ public class PublicacionService implements PublicacionUseCase {
         }
         return publicaciones.stream()
                 .map(this::mapToPublicacionResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<PublicacionResponse> listarMisPublicaciones() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        Long usuarioId = usuarioApi.getCurrentUserId();
 
-        List<Publicacion> publicaciones = publicacionRepositoryPort.findByUsuario(usuario);
+        List<Publicacion> publicaciones = publicacionRepositoryPort.findByUsuarioId(usuarioId);
         return publicaciones.stream()
                 .map(this::mapToPublicacionResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public MessageResponse cancelarPublicacion(Long id) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        Long usuarioId = usuarioApi.getCurrentUserId();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(id)
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
 
-        if (!publicacion.getUsuario().getId().equals(usuario.getId())) {
+        if (!publicacion.getUsuarioId().equals(usuarioId)) {
             throw new PublicacionException("No tienes permiso para cancelar esta publicación");
         }
 
@@ -145,23 +142,24 @@ public class PublicacionService implements PublicacionUseCase {
 
     @Override
     public MessageResponse reportarPublicacion(Long id, ReportarPublicacionRequest request) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        Long usuarioId = usuarioApi.getCurrentUserId();
+        String nombreUsuario = usuarioApi.getCurrentUserFullName();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(id)
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
 
         Reporte reporte = Reporte.builder()
+                .publicacionId(publicacion.getId())
                 .publicacion(publicacion)
-                .usuario(usuario)
+                .usuarioId(usuarioId)
+                .nombreUsuario(nombreUsuario)
                 .motivo(request.motivo())
                 .build();
 
         reporteRepositoryPort.save(reporte);
 
         // Si hay más de 3 reportes, marcar la publicación como reportada
-        long cantidadReportes = reporteRepositoryPort.countByPublicacion(publicacion);
+        long cantidadReportes = reporteRepositoryPort.countByPublicacionId(publicacion.getId());
         if (cantidadReportes >= 3 && publicacion.getEstado() != EstadoPublicacion.REPORTADA) {
             publicacion.setEstado(EstadoPublicacion.REPORTADA);
             publicacionRepositoryPort.save(publicacion);
@@ -185,11 +183,11 @@ public class PublicacionService implements PublicacionUseCase {
                 .id(publicacion.getId())
                 .titulo(publicacion.getTitulo())
                 .descripcion(publicacion.getDescripcion())
-                .usuarioId(publicacion.getUsuario().getId())
-                .nombreUsuario(publicacion.getUsuario().getNombreCompleto())
+                .usuarioId(publicacion.getUsuarioId())
+                .nombreUsuario(publicacion.getNombreUsuario())
                 .tipoPublicacion(publicacion.getTipoPublicacion())
                 .categoriaServicio(publicacion.getCategoriaServicio())
-                .zonaId(publicacion.getZona().getId())
+                .zonaId(publicacion.getZonaId())
                 .ubicacionCompleta(ubicacionCompleta)
                 .estado(publicacion.getEstado())
                 .fechaCreacion(publicacion.getFechaCreacion())

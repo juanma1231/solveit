@@ -1,8 +1,8 @@
 package co.edu.uco.solveit.publicacion.infrastructure.controller;
 
 import co.edu.uco.solveit.publicacion.domain.port.in.ZonaUseCase;
-import co.edu.uco.solveit.publicacion.dto.ZonaRequest;
-import co.edu.uco.solveit.publicacion.dto.ZonaResponse;
+import co.edu.uco.solveit.publicacion.application.dto.ZonaRequest;
+import co.edu.uco.solveit.publicacion.application.dto.ZonaResponse;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

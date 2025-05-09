@@ -1,16 +1,16 @@
 package co.edu.uco.solveit.publicacion.application.service;
 
+import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
+import co.edu.uco.solveit.publicacion.domain.model.Zona;
 import co.edu.uco.solveit.publicacion.domain.port.in.ZonaUseCase;
 import co.edu.uco.solveit.publicacion.domain.port.out.ZonaRepositoryPort;
-import co.edu.uco.solveit.publicacion.dto.ZonaRequest;
-import co.edu.uco.solveit.publicacion.dto.ZonaResponse;
-import co.edu.uco.solveit.publicacion.entity.Zona;
-import co.edu.uco.solveit.publicacion.exception.PublicacionException;
+import co.edu.uco.solveit.publicacion.application.dto.ZonaRequest;
+import co.edu.uco.solveit.publicacion.application.dto.ZonaResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class ZonaService implements ZonaUseCase {
     public List<ZonaResponse> listarZonas() {
         return zonaRepositoryPort.findAll().stream()
                 .map(this::mapToZonaResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

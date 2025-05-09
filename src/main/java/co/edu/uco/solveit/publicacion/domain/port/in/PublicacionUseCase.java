@@ -1,10 +1,10 @@
 package co.edu.uco.solveit.publicacion.domain.port.in;
 
-import co.edu.uco.solveit.publicacion.dto.ActualizarPublicacionRequest;
-import co.edu.uco.solveit.publicacion.dto.CrearPublicacionRequest;
-import co.edu.uco.solveit.publicacion.dto.PublicacionResponse;
-import co.edu.uco.solveit.publicacion.dto.ReportarPublicacionRequest;
-import co.edu.uco.solveit.publicacion.entity.TipoPublicacion;
+import co.edu.uco.solveit.publicacion.application.dto.ActualizarPublicacionRequest;
+import co.edu.uco.solveit.publicacion.application.dto.CrearPublicacionRequest;
+import co.edu.uco.solveit.publicacion.application.dto.PublicacionResponse;
+import co.edu.uco.solveit.publicacion.application.dto.ReportarPublicacionRequest;
+import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
 
 import java.util.List;

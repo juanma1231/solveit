@@ -6,29 +6,28 @@ import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
 import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
 import co.edu.uco.solveit.publicacion.infrastructure.mapper.PublicacionMapper;
 import co.edu.uco.solveit.publicacion.infrastructure.repository.PublicacionRepository;
+import co.edu.uco.solveit.usuario.UsuarioApi;
 import co.edu.uco.solveit.usuario.entity.Usuario;
-import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Component
 @RequiredArgsConstructor
 public class PublicacionRepositoryAdapter implements PublicacionRepositoryPort {
 
     private final PublicacionRepository publicacionRepository;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioApi usuarioApi;
 
     @Override
     public Publicacion save(Publicacion publicacion) {
         co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion entity = PublicacionMapper.toEntity(publicacion);
 
-        // Set usuario and zona if they are not set
         if (entity.getUsuario() == null && publicacion.getUsuarioId() != null) {
-            usuarioRepository.findById(publicacion.getUsuarioId())
+            usuarioApi.findById(publicacion.getUsuarioId())
                     .ifPresent(entity::setUsuario);
         }
 
@@ -46,16 +45,16 @@ public class PublicacionRepositoryAdapter implements PublicacionRepositoryPort {
     public List<Publicacion> findAll() {
         return publicacionRepository.findAll().stream()
                 .map(PublicacionMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<Publicacion> findByUsuarioId(Long usuarioId) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
+        Usuario usuario = usuarioApi.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return publicacionRepository.findByUsuario(usuario).stream()
                 .map(PublicacionMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -64,7 +63,7 @@ public class PublicacionRepositoryAdapter implements PublicacionRepositoryPort {
                 co.edu.uco.solveit.publicacion.infrastructure.entity.TipoPublicacion.valueOf(tipoPublicacion.name());
         return publicacionRepository.findByTipoPublicacion(entityTipo).stream()
                 .map(PublicacionMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -73,18 +72,18 @@ public class PublicacionRepositoryAdapter implements PublicacionRepositoryPort {
                 co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoPublicacion.valueOf(estado.name());
         return publicacionRepository.findByEstado(entityEstado).stream()
                 .map(PublicacionMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<Publicacion> findByUsuarioIdAndEstado(Long usuarioId, EstadoPublicacion estado) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
+        Usuario usuario = usuarioApi.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoPublicacion entityEstado = 
                 co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoPublicacion.valueOf(estado.name());
         return publicacionRepository.findByUsuarioAndEstado(usuario, entityEstado).stream()
                 .map(PublicacionMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -95,7 +94,7 @@ public class PublicacionRepositoryAdapter implements PublicacionRepositoryPort {
                 co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoPublicacion.valueOf(estado.name());
         return publicacionRepository.findByTipoPublicacionAndEstado(entityTipo, entityEstado).stream()
                 .map(PublicacionMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

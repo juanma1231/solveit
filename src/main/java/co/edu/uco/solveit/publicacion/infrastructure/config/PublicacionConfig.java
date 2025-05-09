@@ -6,6 +6,7 @@ import co.edu.uco.solveit.publicacion.domain.port.in.PublicacionUseCase;
 import co.edu.uco.solveit.publicacion.domain.port.in.ZonaUseCase;
 import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.port.out.ReporteRepositoryPort;
+import co.edu.uco.solveit.usuario.UsuarioApi;
 import co.edu.uco.solveit.publicacion.domain.port.out.ZonaRepositoryPort;
 import co.edu.uco.solveit.publicacion.infrastructure.adapter.PublicacionRepositoryAdapter;
 import co.edu.uco.solveit.publicacion.infrastructure.adapter.ReporteRepositoryAdapter;
@@ -31,13 +32,13 @@ public class PublicacionConfig {
     }
 
     @Bean
-    public PublicacionRepositoryPort publicacionRepositoryPort(PublicacionRepository publicacionRepository) {
-        return new PublicacionRepositoryAdapter(publicacionRepository);
+    public PublicacionRepositoryPort publicacionRepositoryPort(PublicacionRepository publicacionRepository, UsuarioApi usuarioApi) {
+        return new PublicacionRepositoryAdapter(publicacionRepository, usuarioApi);
     }
 
     @Bean
-    public ReporteRepositoryPort reporteRepositoryPort(ReporteRepository reporteRepository) {
-        return new ReporteRepositoryAdapter(reporteRepository);
+    public ReporteRepositoryPort reporteRepositoryPort(ReporteRepository reporteRepository, UsuarioApi usuarioApi) {
+        return new ReporteRepositoryAdapter(reporteRepository, usuarioApi);
     }
 
     @Bean
@@ -45,11 +46,11 @@ public class PublicacionConfig {
             PublicacionRepositoryPort publicacionRepositoryPort,
             ZonaRepositoryPort zonaRepositoryPort,
             ReporteRepositoryPort reporteRepositoryPort,
-            UsuarioRepository usuarioRepository) {
+            UsuarioApi usuarioApi) {
         return new PublicacionService(
                 publicacionRepositoryPort,
                 zonaRepositoryPort,
                 reporteRepositoryPort,
-                usuarioRepository);
+                usuarioApi);
     }
 }

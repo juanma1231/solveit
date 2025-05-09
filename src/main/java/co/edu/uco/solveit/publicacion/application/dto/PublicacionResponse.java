@@ -1,7 +1,7 @@
 package co.edu.uco.solveit.publicacion.application.dto;
 
-import co.edu.uco.solveit.publicacion.entity.EstadoPublicacion;
-import co.edu.uco.solveit.publicacion.entity.TipoPublicacion;
+import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
+import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
 import lombok.Builder;
 
 import java.time.LocalDateTime;

@@ -1,7 +1,7 @@
 package co.edu.uco.solveit.usuario.exception;
 
 import co.edu.uco.solveit.poliza.exception.PolizaException;
-import co.edu.uco.solveit.publicacion.exception.PublicacionException;
+import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

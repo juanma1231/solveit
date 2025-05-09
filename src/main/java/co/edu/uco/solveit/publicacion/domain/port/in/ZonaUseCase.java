@@ -1,7 +1,7 @@
 package co.edu.uco.solveit.publicacion.domain.port.in;
 
-import co.edu.uco.solveit.publicacion.dto.ZonaRequest;
-import co.edu.uco.solveit.publicacion.dto.ZonaResponse;
+import co.edu.uco.solveit.publicacion.application.dto.ZonaRequest;
+import co.edu.uco.solveit.publicacion.application.dto.ZonaResponse;
 
 import java.util.List;
 

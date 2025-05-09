@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Component
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class ZonaRepositoryAdapter implements ZonaRepositoryPort {
     public List<Zona> findAll() {
         return zonaRepository.findAll().stream()
                 .map(ZonaMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
