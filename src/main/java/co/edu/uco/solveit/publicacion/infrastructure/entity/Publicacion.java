@@ -1,4 +1,4 @@
-package co.edu.uco.solveit.publicacion.entity;
+package co.edu.uco.solveit.publicacion.infrastructure.entity;
 
 import co.edu.uco.solveit.usuario.entity.Usuario;
 import jakarta.persistence.*;

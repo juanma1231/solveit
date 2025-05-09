@@ -1,6 +1,6 @@
 package co.edu.uco.solveit.publicacion.domain.port.out;
 
-import co.edu.uco.solveit.publicacion.entity.Zona;
+import co.edu.uco.solveit.publicacion.domain.model.Zona;
 
 import java.util.List;
 import java.util.Optional;

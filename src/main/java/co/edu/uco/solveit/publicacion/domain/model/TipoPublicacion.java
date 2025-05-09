@@ -1,4 +1,4 @@
-package co.edu.uco.solveit.publicacion.entity;
+package co.edu.uco.solveit.publicacion.domain.model;
 
 public enum TipoPublicacion {
     OFERTA,
