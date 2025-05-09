@@ -10,6 +10,7 @@ import co.edu.uco.solveit.usuario.dto.MessageResponse;
 import co.edu.uco.solveit.usuario.entity.Usuario;
 import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,23 +28,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class PolizaService {
 
     private final PolizaRepository polizaRepository;
     private final UsuarioRepository usuarioRepository;
-    private final Path fileStorageLocation = Paths.get("uploads/polizas").toAbsolutePath().normalize();
-
-    public PolizaService(PolizaRepository polizaRepository, UsuarioRepository usuarioRepository) {
-        this.polizaRepository = polizaRepository;
-        this.usuarioRepository = usuarioRepository;
-
-        try {
-            Files.createDirectories(this.fileStorageLocation);
-        } catch (IOException ex) {
-            throw new PolizaException("No se pudo crear el directorio para almacenar los archivos.", ex);
-        }
-    }
 
     public PolizaResponse registrarPoliza(RegistrarPolizaRequest request, MultipartFile archivo) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -61,16 +52,13 @@ public class PolizaService {
                 .build();
 
         if (archivo != null && !archivo.isEmpty()) {
-            String nombreArchivo = UUID.randomUUID() + "_" + archivo.getOriginalFilename();
-            Path targetLocation = fileStorageLocation.resolve(nombreArchivo);
-
             try {
-                Files.copy(archivo.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
                 poliza.setNombreArchivo(archivo.getOriginalFilename());
-                poliza.setRutaArchivo(targetLocation.toString());
                 poliza.setTipoArchivo(archivo.getContentType());
+                poliza.setArchivoData(archivo.getBytes());
+                poliza.setRutaArchivo(UUID.randomUUID().toString());
             } catch (IOException ex) {
-                throw new PolizaException("No se pudo almacenar el archivo " + nombreArchivo, ex);
+                throw new PolizaException("No se pudo almacenar el archivo " + archivo.getOriginalFilename(), ex);
             }
         }
 
@@ -85,8 +73,6 @@ public class PolizaService {
 
         Poliza poliza = polizaRepository.findById(id)
                 .orElseThrow(() -> new PolizaException("Póliza no encontrada"));
-
-        // Verificar que el usuario sea el titular de la póliza
         if (!poliza.getTitular().getId().equals(usuario.getId())) {
             throw new PolizaException("No tienes permiso para actualizar esta póliza");
         }
@@ -99,26 +85,13 @@ public class PolizaService {
         poliza.setTipoPoliza(request.tipoPoliza());
 
         if (archivo != null && !archivo.isEmpty()) {
-            // Eliminar archivo anterior si existe
-            if (poliza.getRutaArchivo() != null) {
-                try {
-                    Files.deleteIfExists(Paths.get(poliza.getRutaArchivo()));
-                } catch (IOException ex) {
-                    // Log error but continue
-                    System.err.println("No se pudo eliminar el archivo anterior: " + ex.getMessage());
-                }
-            }
-
-            String nombreArchivo = UUID.randomUUID().toString() + "_" + archivo.getOriginalFilename();
-            Path targetLocation = fileStorageLocation.resolve(nombreArchivo);
-
             try {
-                Files.copy(archivo.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
                 poliza.setNombreArchivo(archivo.getOriginalFilename());
-                poliza.setRutaArchivo(targetLocation.toString());
                 poliza.setTipoArchivo(archivo.getContentType());
+                poliza.setArchivoData(archivo.getBytes());
+                poliza.setRutaArchivo(UUID.randomUUID().toString());
             } catch (IOException ex) {
-                throw new PolizaException("No se pudo almacenar el archivo " + nombreArchivo, ex);
+                throw new PolizaException("No se pudo almacenar el archivo " + archivo.getOriginalFilename(), ex);
             }
         }
 
@@ -127,18 +100,8 @@ public class PolizaService {
     }
 
     public PolizaResponse obtenerPoliza(Long id) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-
         Poliza poliza = polizaRepository.findById(id)
                 .orElseThrow(() -> new PolizaException("Póliza no encontrada"));
-
-        // Verificar que el usuario sea el titular de la póliza o un administrador
-        if (!poliza.getTitular().getId().equals(usuario.getId()) && 
-            !usuario.getRole().name().equals("ADMIN")) {
-            throw new PolizaException("No tienes permiso para ver esta póliza");
-        }
 
         return mapToPolizaResponse(poliza);
     }
@@ -148,7 +111,6 @@ public class PolizaService {
         Usuario usuarioAutenticado = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        // Verificar que el usuario autenticado sea el mismo que se está consultando o un administrador
         if (!usuarioAutenticado.getId().equals(idUsuario) && 
             !usuarioAutenticado.getRole().name().equals("ADMIN")) {
             throw new PolizaException("No tienes permiso para ver las pólizas de este usuario");
@@ -157,7 +119,7 @@ public class PolizaService {
         List<Poliza> polizas = polizaRepository.findByTitularId(idUsuario);
         return polizas.stream()
                 .map(this::mapToPolizaResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<PolizaResponse> obtenerMisPolizas() {
@@ -168,7 +130,7 @@ public class PolizaService {
         List<Poliza> polizas = polizaRepository.findByTitular(usuario);
         return polizas.stream()
                 .map(this::mapToPolizaResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Resource descargarArchivoPoliza(Long id) {
@@ -179,26 +141,31 @@ public class PolizaService {
         Poliza poliza = polizaRepository.findById(id)
                 .orElseThrow(() -> new PolizaException("Póliza no encontrada"));
 
-        // Verificar que el usuario sea el titular de la póliza o un administrador
         if (!poliza.getTitular().getId().equals(usuario.getId()) && 
             !usuario.getRole().name().equals("ADMIN")) {
             throw new PolizaException("No tienes permiso para descargar esta póliza");
         }
 
-        if (poliza.getRutaArchivo() == null) {
+        if (poliza.getArchivoData() == null || poliza.getNombreArchivo() == null) {
             throw new PolizaException("Esta póliza no tiene un archivo adjunto");
         }
 
         try {
-            Path filePath = Paths.get(poliza.getRutaArchivo());
-            Resource resource = new UrlResource(filePath.toUri());
+            Path tempFile = Files.createTempFile("poliza_" + id + "_", "_" + poliza.getNombreArchivo());
+            Files.write(tempFile, poliza.getArchivoData());
 
-            if (resource.exists()) {
-                return resource;
-            } else {
-                throw new PolizaException("El archivo no existe");
-            }
-        } catch (MalformedURLException ex) {
+            Resource resource = new UrlResource(tempFile.toUri());
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    log.error("Error al eliminar el archivo temporal", e);
+                }
+            }));
+
+            return resource;
+        } catch (IOException ex) {
             throw new PolizaException("Error al obtener el archivo", ex);
         }
     }
@@ -211,20 +178,9 @@ public class PolizaService {
         Poliza poliza = polizaRepository.findById(id)
                 .orElseThrow(() -> new PolizaException("Póliza no encontrada"));
 
-        // Verificar que el usuario sea el titular de la póliza
         if (!poliza.getTitular().getId().equals(usuario.getId()) && 
             !usuario.getRole().name().equals("ADMIN")) {
             throw new PolizaException("No tienes permiso para eliminar esta póliza");
-        }
-
-        // Eliminar archivo si existe
-        if (poliza.getRutaArchivo() != null) {
-            try {
-                Files.deleteIfExists(Paths.get(poliza.getRutaArchivo()));
-            } catch (IOException ex) {
-                // Log error but continue
-                System.err.println("No se pudo eliminar el archivo: " + ex.getMessage());
-            }
         }
 
         polizaRepository.delete(poliza);

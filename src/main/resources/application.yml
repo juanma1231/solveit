@@ -5,14 +5,28 @@ spring:
   application.name: solveit
 
   threads.virtual.enabled: true
-  jpa:
-    generate-ddl: true
 
   datasource:
-    url: localhost:3306
+    url: jdbc:mysql://localhost:3306/solveit?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: myuser
     password: verysecret
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
 
 
 management:

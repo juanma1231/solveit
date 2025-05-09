@@ -51,6 +51,10 @@ public class Poliza {
     @Column(name = "tipo_archivo")
     private String tipoArchivo;
 
+    @Lob
+    @Column(name = "archivo_data")
+    private byte[] archivoData;
+
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
