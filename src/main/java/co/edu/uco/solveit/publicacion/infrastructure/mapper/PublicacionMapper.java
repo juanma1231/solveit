@@ -20,7 +20,7 @@ public class PublicacionMapper {
                 .categoriaServicio(entity.getCategoriaServicio())
                 .zonaId(entity.getZona().getId())
                 .zona(ZonaMapper.toDomain(entity.getZona()))
-                .estado(mapEstadoPublicacionToDomain(entity.getEstado()))
+                .estado(entity.getEstado())
                 .fechaCreacion(entity.getFechaCreacion())
                 .fechaActualizacion(entity.getFechaActualizacion())
                 .build();
@@ -38,7 +38,7 @@ public class PublicacionMapper {
                 .descripcion(domain.getDescripcion())
                 .tipoPublicacion(mapTipoPublicacionToEntity(domain.getTipoPublicacion()))
                 .categoriaServicio(domain.getCategoriaServicio())
-                .estado(mapEstadoPublicacionToEntity(domain.getEstado()))
+                .estado(domain.getEstado())
                 .fechaCreacion(domain.getFechaCreacion())
                 .fechaActualizacion(domain.getFechaActualizacion())
                 .build();
@@ -48,31 +48,19 @@ public class PublicacionMapper {
         return entity;
     }
     
-    private static EstadoPublicacion mapEstadoPublicacionToDomain(co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoPublicacion estado) {
-        if (estado == null) {
-            return null;
-        }
-        return EstadoPublicacion.valueOf(estado.name());
-    }
+
     
-    private static co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoPublicacion mapEstadoPublicacionToEntity(EstadoPublicacion estado) {
-        if (estado == null) {
-            return null;
-        }
-        return co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoPublicacion.valueOf(estado.name());
-    }
-    
-    private static TipoPublicacion mapTipoPublicacionToDomain(co.edu.uco.solveit.publicacion.infrastructure.entity.TipoPublicacion tipo) {
+    private static TipoPublicacion mapTipoPublicacionToDomain(TipoPublicacion tipo) {
         if (tipo == null) {
             return null;
         }
         return TipoPublicacion.valueOf(tipo.name());
     }
     
-    private static co.edu.uco.solveit.publicacion.infrastructure.entity.TipoPublicacion mapTipoPublicacionToEntity(TipoPublicacion tipo) {
+    private static TipoPublicacion mapTipoPublicacionToEntity(TipoPublicacion tipo) {
         if (tipo == null) {
             return null;
         }
-        return co.edu.uco.solveit.publicacion.infrastructure.entity.TipoPublicacion.valueOf(tipo.name());
+        return TipoPublicacion.valueOf(tipo.name());
     }
 }

@@ -1,6 +1,7 @@
 package co.edu.uco.solveit.publicacion.infrastructure.repository;
 
-import co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoInteres;
+
+import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.InteresEntity;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion;
 import co.edu.uco.solveit.usuario.entity.Usuario;

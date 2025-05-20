@@ -1,8 +1,8 @@
 package co.edu.uco.solveit.publicacion.infrastructure.repository;
 
-import co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoPublicacion;
+import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
+import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion;
-import co.edu.uco.solveit.publicacion.infrastructure.entity.TipoPublicacion;
 import co.edu.uco.solveit.usuario.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

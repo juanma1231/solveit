@@ -1,7 +1,7 @@
 package co.edu.uco.solveit.publicacion.infrastructure.mapper;
 
+import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
 import co.edu.uco.solveit.publicacion.domain.model.Interes;
-import co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoInteres;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.InteresEntity;
 
 public class InteresMapper {
@@ -21,7 +21,7 @@ public class InteresMapper {
                 .publicacion(entity.getPublicacion() != null ? PublicacionMapper.toDomain(entity.getPublicacion()) : null)
                 .usuarioInteresadoId(entity.getUsuarioInteresado() != null ? entity.getUsuarioInteresado().getId() : null)
                 .nombreUsuarioInteresado(entity.getNombreUsuarioInteresado())
-                .estado(mapToDomainEstado(entity.getEstado()))
+                .estado(entity.getEstado())
                 .fechaCreacion(entity.getFechaCreacion())
                 .fechaActualizacion(entity.getFechaActualizacion())
                 .build();
@@ -35,23 +35,10 @@ public class InteresMapper {
         return InteresEntity.builder()
                 .id(domain.getId())
                 .nombreUsuarioInteresado(domain.getNombreUsuarioInteresado())
-                .estado(mapToEntityEstado(domain.getEstado()))
+                .estado(domain.getEstado())
                 .fechaCreacion(domain.getFechaCreacion())
                 .fechaActualizacion(domain.getFechaActualizacion())
                 .build();
     }
 
-    private static co.edu.uco.solveit.publicacion.domain.model.EstadoInteres mapToDomainEstado(EstadoInteres estado) {
-        if (estado == null) {
-            return null;
-        }
-        return co.edu.uco.solveit.publicacion.domain.model.EstadoInteres.valueOf(estado.name());
-    }
-
-    private static EstadoInteres mapToEntityEstado(co.edu.uco.solveit.publicacion.domain.model.EstadoInteres estado) {
-        if (estado == null) {
-            return null;
-        }
-        return EstadoInteres.valueOf(estado.name());
-    }
 }

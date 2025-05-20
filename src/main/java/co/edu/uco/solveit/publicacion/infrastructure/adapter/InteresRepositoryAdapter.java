@@ -64,8 +64,8 @@ public class InteresRepositoryAdapter implements InteresRepositoryPort {
         if (publicacion.isEmpty()) {
             return List.of();
         }
-        co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoInteres entityEstado = 
-                co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoInteres.valueOf(estado.name());
+        EstadoInteres entityEstado =
+                EstadoInteres.valueOf(estado.name());
         return interesRepository.findByPublicacionAndEstado(publicacion.get(), entityEstado).stream()
                 .map(InteresMapper::toDomain)
                 .toList();
@@ -88,8 +88,8 @@ public class InteresRepositoryAdapter implements InteresRepositoryPort {
         if (usuario.isEmpty()) {
             return List.of();
         }
-        co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoInteres entityEstado = 
-                co.edu.uco.solveit.publicacion.infrastructure.entity.EstadoInteres.valueOf(estado.name());
+        EstadoInteres entityEstado =
+                EstadoInteres.valueOf(estado.name());
         return interesRepository.findByUsuarioInteresadoAndEstado(usuario.get(), entityEstado).stream()
                 .map(InteresMapper::toDomain)
                 .toList();
