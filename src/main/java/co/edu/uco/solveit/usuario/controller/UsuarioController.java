@@ -1,9 +1,6 @@
 package co.edu.uco.solveit.usuario.controller;
 
-import co.edu.uco.solveit.usuario.dto.ActualizarUsuarioRequest;
-import co.edu.uco.solveit.usuario.dto.MessageResponse;
-import co.edu.uco.solveit.usuario.dto.ResetPasswordRequest;
-import co.edu.uco.solveit.usuario.dto.SolicitudResetPasswordRequest;
+import co.edu.uco.solveit.usuario.dto.*;
 import co.edu.uco.solveit.usuario.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +25,11 @@ public class UsuarioController {
     @PostMapping("/reset-password/confirmar")
     public MessageResponse resetPassword(@RequestBody ResetPasswordRequest request) {
         return usuarioService.resetPassword(request);
+    }
+    @PostMapping("/calificar")
+    public MessageResponse calificarPublicacion(
+            @RequestBody CalificarUsuarioRequest request
+    ){
+        return usuarioService.calificatUsuario(request);
     }
 }

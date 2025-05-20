@@ -1,10 +1,9 @@
 package co.edu.uco.solveit.usuario.service;
 
-import co.edu.uco.solveit.usuario.dto.ActualizarUsuarioRequest;
-import co.edu.uco.solveit.usuario.dto.MessageResponse;
-import co.edu.uco.solveit.usuario.dto.ResetPasswordRequest;
-import co.edu.uco.solveit.usuario.dto.SolicitudResetPasswordRequest;
+import co.edu.uco.solveit.usuario.dto.*;
+import co.edu.uco.solveit.usuario.entity.Calificacion;
 import co.edu.uco.solveit.usuario.entity.Usuario;
+import co.edu.uco.solveit.usuario.repository.CalificacionRepository;
 import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +20,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CalificacionRepository calificacionRepository;
     //TOdo Aquí se inyectar un servicio de email para enviar correos de recuperación
 
     public MessageResponse actualizarDatosUsuario(ActualizarUsuarioRequest request) {
@@ -117,6 +117,21 @@ public class UsuarioService {
 
         return MessageResponse.builder()
                 .message("Contraseña actualizada correctamente")
+                .success(true)
+                .build();
+    }
+    public MessageResponse calificatUsuario(CalificarUsuarioRequest request) {
+        Usuario usuario = usuarioRepository.findByEmail(request.email())
+                .orElseThrow(() -> new RuntimeException("No existe un usuario con ese email"));
+
+        Calificacion calificacion = Calificacion.builder()
+                .usuario(usuario)
+                .valor(request.calificacion())
+                .build();
+        calificacionRepository.save(calificacion);
+
+        return MessageResponse.builder()
+                .message("Usuario calificado con exito")
                 .success(true)
                 .build();
     }
