@@ -1,0 +1,19 @@
+###
+POST http://localhost:9595/api/v1/intereses
+
+###
+GET http://localhost:9595/api/v1/intereses/mis-intereses
+
+
+###
+GET http://localhost:9595/api/v1/intereses/mis-publicaciones
+
+###
+GET http://localhost:9595/api/v1/intereses/publicacion/{{publicacionId}}
+
+
+###
+POST http://localhost:9595/api/v1/intereses/{{interesId}}/aceptar
+
+###
+POST http://localhost:9595/api/v1/intereses/{{interesId}}/rechazar

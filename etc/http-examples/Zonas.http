@@ -1,0 +1,14 @@
+###
+GET http://localhost:9595/api/v1/zonas
+
+###
+POST http://localhost:9595/api/v1/zonas
+
+###
+GET http://localhost:9595/api/v1/zonas/{{id}}
+
+###
+PUT http://localhost:9595/api/v1/zonas/{{id}}
+
+###
+DELETE http://localhost:9595/api/v1/zonas/{{id}}

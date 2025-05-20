@@ -1,0 +1,8 @@
+###
+PUT http://localhost:9595/api/v1/usuarios/perfil
+
+###
+POST http://localhost:9595/api/v1/usuarios/reset-password/confirmar
+
+###
+POST http://localhost:9595/api/v1/usuarios/reset-password/solicitar
