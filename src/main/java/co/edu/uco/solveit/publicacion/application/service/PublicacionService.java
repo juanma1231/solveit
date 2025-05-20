@@ -171,6 +171,35 @@ public class PublicacionService implements PublicacionUseCase {
                 .build();
     }
 
+    @Override
+    public MessageResponse finalizarPublicacion(Long id) {
+        Long usuarioId = usuarioApi.getCurrentUserId();
+
+        Publicacion publicacion = publicacionRepositoryPort.findById(id)
+                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+
+        if (!publicacion.getUsuarioId().equals(usuarioId)) {
+            throw new PublicacionException("No tienes permiso para finalizar esta publicación");
+        }
+
+        if (publicacion.getEstado() == EstadoPublicacion.COMPLETADA) {
+            throw new PublicacionException("La publicación ya está finalizada");
+        }
+
+        if (publicacion.getEstado() == EstadoPublicacion.CANCELADA || 
+                publicacion.getEstado() == EstadoPublicacion.BLOQUEADA) {
+            throw new PublicacionException("No se puede finalizar una publicación cancelada o bloqueada");
+        }
+
+        publicacion.setEstado(EstadoPublicacion.COMPLETADA);
+        publicacionRepositoryPort.save(publicacion);
+
+        return MessageResponse.builder()
+                .message("Publicación finalizada correctamente")
+                .success(true)
+                .build();
+    }
+
     private PublicacionResponse mapToPublicacionResponse(Publicacion publicacion) {
         String ubicacionCompleta = String.format("%s, %s, %s, %s, %s",
                 publicacion.getZona().getCorregimiento(),

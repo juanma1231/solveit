@@ -42,3 +42,15 @@ GET http://localhost:9595/api/v1/publicaciones/mis-publicaciones
 @id2 = variable value
 POST http://localhost:9595/api/v1/publicaciones/{{id2}}/reportar
 Content-Type: application/json
+
+{
+  "motivo": "Contenido inapropiado"
+}
+
+###
+@id3 = variable value
+POST http://localhost:9595/api/v1/publicaciones/{{id3}}/cancelar
+
+###
+@id4 = variable value
+POST http://localhost:9595/api/v1/publicaciones/{{id4}}/finalizar
