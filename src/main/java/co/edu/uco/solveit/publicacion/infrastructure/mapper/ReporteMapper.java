@@ -1,10 +1,11 @@
 package co.edu.uco.solveit.publicacion.infrastructure.mapper;
 
 import co.edu.uco.solveit.publicacion.domain.model.Reporte;
+import co.edu.uco.solveit.publicacion.infrastructure.entity.ReporteEntity;
 
 public class ReporteMapper {
 
-    public static Reporte toDomain(co.edu.uco.solveit.publicacion.infrastructure.entity.Reporte entity) {
+    public static Reporte toDomain(ReporteEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -20,13 +21,13 @@ public class ReporteMapper {
                 .build();
     }
 
-    public static co.edu.uco.solveit.publicacion.infrastructure.entity.Reporte toEntity(Reporte domain) {
+    public static ReporteEntity toEntity(Reporte domain) {
         if (domain == null) {
             return null;
         }
         
-        co.edu.uco.solveit.publicacion.infrastructure.entity.Reporte entity = 
-            co.edu.uco.solveit.publicacion.infrastructure.entity.Reporte.builder()
+        ReporteEntity entity =
+            ReporteEntity.builder()
                 .id(domain.getId())
                 .motivo(domain.getMotivo())
                 .fechaReporte(domain.getFechaReporte())

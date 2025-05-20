@@ -2,6 +2,7 @@ package co.edu.uco.solveit.publicacion.infrastructure.adapter;
 
 import co.edu.uco.solveit.publicacion.domain.model.Reporte;
 import co.edu.uco.solveit.publicacion.domain.port.out.ReporteRepositoryPort;
+import co.edu.uco.solveit.publicacion.infrastructure.entity.ReporteEntity;
 import co.edu.uco.solveit.publicacion.infrastructure.mapper.ReporteMapper;
 import co.edu.uco.solveit.publicacion.infrastructure.repository.ReporteRepository;
 import co.edu.uco.solveit.publicacion.infrastructure.mapper.PublicacionMapper;
@@ -23,7 +24,7 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
 
     @Override
     public Reporte save(Reporte reporte) {
-        co.edu.uco.solveit.publicacion.infrastructure.entity.Reporte entity = ReporteMapper.toEntity(reporte);
+        ReporteEntity entity = ReporteMapper.toEntity(reporte);
 
         if (reporte.getPublicacionId() != null) {
             entity.setPublicacion(PublicacionMapper.toEntity(reporte.getPublicacion()));
@@ -34,7 +35,7 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
                     .ifPresent(entity::setUsuario);
         }
 
-        co.edu.uco.solveit.publicacion.infrastructure.entity.Reporte savedEntity = reporteRepository.save(entity);
+        ReporteEntity savedEntity = reporteRepository.save(entity);
         return ReporteMapper.toDomain(savedEntity);
     }
 

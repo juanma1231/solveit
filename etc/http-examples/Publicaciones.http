@@ -1,0 +1,44 @@
+### POST creacion de publicaciones
+@tipoPublicacion1 = variable value
+POST http://localhost:9595/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion1}}
+Content-Type: application/json
+
+{
+  "usuarioId": 1,
+  "titulo": "Titulo de ejemplo",
+  "descripcion": "Descripción de la publicación",
+  "tipoPublicacion": "OFERTA",
+  "categoriaServicio": "TECNOLOGIA",
+  "zonaId": 1
+}
+
+###
+PUT http://localhost:9595/api/v1/publicaciones/{{id}}
+Content-Type: application/json
+
+{
+  "titulo": "Titulo de ejemplo",
+  "descripcion": "Descripción de la publicación",
+  "tipoPublicacion": "OFERTA",
+  "categoriaServicio": "TECNOLOGIA",
+  "zonaId": 1
+}
+
+###
+@id1 = variable value
+GET http://localhost:9595/api/v1/publicaciones/{{id1}}
+
+
+###
+@tipoPublicacion2 = variable value
+GET http://localhost:9595/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion2}}
+
+
+###
+GET http://localhost:9595/api/v1/publicaciones/mis-publicaciones
+
+
+###
+@id2 = variable value
+POST http://localhost:9595/api/v1/publicaciones/{{id2}}/reportar
+Content-Type: application/json
