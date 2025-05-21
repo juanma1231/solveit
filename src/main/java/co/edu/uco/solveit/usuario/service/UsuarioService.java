@@ -110,6 +110,7 @@ public class UsuarioService {
                 .success(true)
                 .build();
     }
+
     public MessageResponse calificarUsuario(CalificarUsuarioRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("No existe un usuario con ese email"));

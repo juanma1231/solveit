@@ -12,13 +12,14 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Calificacion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private Long usuario;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Usuario usuario;
 
     private Integer valor;
-
 }
