@@ -72,14 +72,19 @@ public class InteresRepositoryAdapter implements InteresRepositoryPort {
     }
 
     @Override
-    public List<Interes> findByUsuarioInteresadoId(Long usuarioInteresadoId) {
-        Optional<Usuario> usuario = usuarioApi.findById(usuarioInteresadoId);
-        if (usuario.isEmpty()) {
-            return List.of();
-        }
-        return interesRepository.findByUsuarioInteresado(usuario.get()).stream()
+    public List<Interes> findByPublicacionIdAndEstadoIn(Long publicacionId, List<EstadoInteres> estados) {
+        return interesRepository.findByPublicacionIdAndEstadoIn(publicacionId, estados)
+                .stream()
                 .map(InteresMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<Interes> findByUsuarioInteresadoId(Long usuarioInteresadoId) {
+        Optional<Usuario> usuario = usuarioApi.findById(usuarioInteresadoId);
+        return usuario.map(value -> interesRepository.findByUsuarioInteresado(value).stream()
+                .map(InteresMapper::toDomain)
+                .toList()).orElseGet(List::of);
     }
 
     @Override

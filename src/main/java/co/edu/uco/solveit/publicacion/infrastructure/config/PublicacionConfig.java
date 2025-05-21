@@ -4,8 +4,10 @@ import co.edu.uco.solveit.publicacion.application.service.PublicacionService;
 import co.edu.uco.solveit.publicacion.application.service.ZonaService;
 import co.edu.uco.solveit.publicacion.domain.port.in.PublicacionUseCase;
 import co.edu.uco.solveit.publicacion.domain.port.in.ZonaUseCase;
+import co.edu.uco.solveit.publicacion.domain.port.out.InteresRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.port.out.ReporteRepositoryPort;
+import co.edu.uco.solveit.publicacion.infrastructure.repository.InteresRepository;
 import co.edu.uco.solveit.usuario.UsuarioApi;
 import co.edu.uco.solveit.publicacion.domain.port.out.ZonaRepositoryPort;
 import co.edu.uco.solveit.publicacion.infrastructure.adapter.PublicacionRepositoryAdapter;
@@ -46,11 +48,13 @@ public class PublicacionConfig {
             PublicacionRepositoryPort publicacionRepositoryPort,
             ZonaRepositoryPort zonaRepositoryPort,
             ReporteRepositoryPort reporteRepositoryPort,
+            InteresRepositoryPort interesRepositoryPort,
             UsuarioApi usuarioApi) {
         return new PublicacionService(
                 publicacionRepositoryPort,
                 zonaRepositoryPort,
                 reporteRepositoryPort,
+                interesRepositoryPort,
                 usuarioApi);
     }
 }

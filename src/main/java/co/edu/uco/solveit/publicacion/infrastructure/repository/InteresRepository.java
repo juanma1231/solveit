@@ -2,6 +2,7 @@ package co.edu.uco.solveit.publicacion.infrastructure.repository;
 
 
 import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
+import co.edu.uco.solveit.publicacion.domain.model.Interes;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.InteresEntity;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion;
 import co.edu.uco.solveit.usuario.entity.Usuario;
@@ -19,4 +20,5 @@ public interface InteresRepository extends JpaRepository<InteresEntity, Long> {
     List<InteresEntity> findByUsuarioInteresadoAndEstado(Usuario usuarioInteresado, EstadoInteres estado);
     Optional<InteresEntity> findByPublicacionAndUsuarioInteresado(Publicacion publicacion, Usuario usuarioInteresado);
     boolean existsByPublicacionAndUsuarioInteresado(Publicacion publicacion, Usuario usuarioInteresado);
+    List<InteresEntity> findByPublicacionIdAndEstadoIn(Long publicacionId, List<EstadoInteres> estados);
 }
