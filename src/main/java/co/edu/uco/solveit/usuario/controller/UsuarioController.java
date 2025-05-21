@@ -30,6 +30,6 @@ public class UsuarioController {
     public MessageResponse calificarPublicacion(
             @RequestBody CalificarUsuarioRequest request
     ){
-        return usuarioService.calificatUsuario(request);
+        return usuarioService.calificarUsuario(request);
     }
 }

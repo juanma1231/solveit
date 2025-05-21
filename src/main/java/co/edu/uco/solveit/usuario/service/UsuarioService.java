@@ -1,6 +1,5 @@
 package co.edu.uco.solveit.usuario.service;
 
-import co.edu.uco.solveit.usuario.UsuarioApi;
 import co.edu.uco.solveit.usuario.dto.*;
 import co.edu.uco.solveit.usuario.entity.Calificacion;
 import co.edu.uco.solveit.usuario.entity.Usuario;
@@ -111,7 +110,7 @@ public class UsuarioService {
                 .success(true)
                 .build();
     }
-    public MessageResponse calificatUsuario(CalificarUsuarioRequest request) {
+    public MessageResponse calificarUsuario(CalificarUsuarioRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("No existe un usuario con ese email"));
 

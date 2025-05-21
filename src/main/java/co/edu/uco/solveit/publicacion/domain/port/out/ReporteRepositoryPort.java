@@ -12,4 +12,5 @@ public interface ReporteRepositoryPort {
     List<Reporte> findByUsuarioId(Long usuarioId);
     List<Reporte> findByProcesado(boolean procesado);
     long countByPublicacionId(Long publicacionId);
+    boolean existsByPublicacionIdAndUsuarioId(Long publicacionId, Long usuarioId);
 }

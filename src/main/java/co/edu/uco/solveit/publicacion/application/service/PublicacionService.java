@@ -168,6 +168,11 @@ public class PublicacionService implements PublicacionUseCase {
         Publicacion publicacion = publicacionRepositoryPort.findById(id)
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
 
+        // Verificar si el usuario ya ha reportado esta publicación
+        if (reporteRepositoryPort.existsByPublicacionIdAndUsuarioId(publicacion.getId(), usuarioId)) {
+            throw new PublicacionException("Ya has reportado esta publicación anteriormente");
+        }
+
         Reporte reporte = Reporte.builder()
                 .publicacionId(publicacion.getId())
                 .publicacion(publicacion)
