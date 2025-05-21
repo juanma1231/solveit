@@ -11,6 +11,7 @@ public interface InteresRepositoryPort {
     Optional<Interes> findById(Long id);
     List<Interes> findByPublicacionId(Long publicacionId);
     List<Interes> findByPublicacionIdAndEstado(Long publicacionId, EstadoInteres estado);
+    List<Interes> findByPublicacionIdAndEstadoIn(Long publicacionId, List<EstadoInteres> estados);
     List<Interes> findByUsuarioInteresadoId(Long usuarioInteresadoId);
     List<Interes> findByUsuarioInteresadoIdAndEstado(Long usuarioInteresadoId, EstadoInteres estado);
     Optional<Interes> findByPublicacionIdAndUsuarioInteresadoId(Long publicacionId, Long usuarioInteresadoId);

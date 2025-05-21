@@ -6,6 +6,7 @@ import co.edu.uco.solveit.publicacion.application.dto.PublicacionResponse;
 import co.edu.uco.solveit.publicacion.application.dto.ReportarPublicacionRequest;
 import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
 import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
+import co.edu.uco.solveit.publicacion.domain.model.Interes;
 import co.edu.uco.solveit.publicacion.domain.model.Publicacion;
 import co.edu.uco.solveit.publicacion.domain.model.Reporte;
 import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
@@ -15,6 +16,8 @@ import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.port.out.ReporteRepositoryPort;
 import co.edu.uco.solveit.usuario.UsuarioApi;
 import co.edu.uco.solveit.publicacion.domain.port.out.ZonaRepositoryPort;
+import co.edu.uco.solveit.publicacion.domain.port.out.InteresRepositoryPort;
+import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ public class PublicacionService implements PublicacionUseCase {
     private final PublicacionRepositoryPort publicacionRepositoryPort;
     private final ZonaRepositoryPort zonaRepositoryPort;
     private final ReporteRepositoryPort reporteRepositoryPort;
+    private final InteresRepositoryPort interesRepositoryPort;
     private final UsuarioApi usuarioApi;
 
     @Override
@@ -69,6 +73,14 @@ public class PublicacionService implements PublicacionUseCase {
         if (publicacion.getEstado() == EstadoPublicacion.CANCELADA ||
                 publicacion.getEstado() == EstadoPublicacion.BLOQUEADA) {
             throw new PublicacionException("No se puede actualizar una publicación cancelada o bloqueada");
+        }
+
+        // Verificar si existen intereses pendientes o aceptados para esta publicación
+        List<EstadoInteres> estadosVigentes = List.of(EstadoInteres.PENDIENTE, EstadoInteres.ACEPTADO);
+        List<Interes> interesesVigentes = interesRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
+
+        if (!interesesVigentes.isEmpty()) {
+            throw new PublicacionException("No se puede actualizar una publicación que tiene intereses vigentes");
         }
 
         Zona zona = zonaRepositoryPort.findById(request.zonaId())
@@ -129,6 +141,14 @@ public class PublicacionService implements PublicacionUseCase {
 
         if (publicacion.getEstado() == EstadoPublicacion.CANCELADA) {
             throw new PublicacionException("La publicación ya está cancelada");
+        }
+
+        // Verificar si existen intereses pendientes o aceptados para esta publicación
+        List<EstadoInteres> estadosVigentes = List.of(EstadoInteres.ACEPTADO);
+        List<Interes> interesesVigentes = interesRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
+
+        if (!interesesVigentes.isEmpty()) {
+            throw new PublicacionException("No se puede cancelar una publicación que tiene intereses vigentes");
         }
 
         publicacion.setEstado(EstadoPublicacion.CANCELADA);

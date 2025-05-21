@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.usuario.service;
 
+import co.edu.uco.solveit.usuario.UsuarioApi;
 import co.edu.uco.solveit.usuario.dto.*;
 import co.edu.uco.solveit.usuario.entity.Calificacion;
 import co.edu.uco.solveit.usuario.entity.Usuario;
@@ -31,14 +32,6 @@ public class UsuarioService {
 
         if (request.nombreCompleto() != null && !request.nombreCompleto().isEmpty()) {
             usuario.setNombreCompleto(request.nombreCompleto());
-        }
-
-        if (request.email() != null && !request.email().isEmpty() && !request.email().equals(usuario.getEmail())) {
-
-            if (usuarioRepository.existsByEmail(request.email())) {
-                throw new RuntimeException("El email ya está registrado por otro usuario");
-            }
-            usuario.setEmail(request.email());
         }
 
         if (request.numeroIdentificacion() != null && !request.numeroIdentificacion().isEmpty()) {
@@ -77,16 +70,14 @@ public class UsuarioService {
     }
 
     public MessageResponse solicitarResetPassword(SolicitudResetPasswordRequest request) {
-        // Buscar usuario por email
+
         Usuario usuario = usuarioRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("No existe un usuario con ese email"));
 
-        // Generar token de recuperación
         String token = UUID.randomUUID().toString();
         usuario.setTokenRecuperacion(token);
         usuario.setExpiracionTokenRecuperacion(LocalDateTime.now().plusHours(1)); // Token válido por 1 hora
 
-        // Guardar token
         usuarioRepository.save(usuario);
 
         // Aquí se enviaría un email con el token de recuperación
