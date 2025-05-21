@@ -26,6 +26,8 @@ public class UsuarioController {
     public MessageResponse resetPassword(@RequestBody ResetPasswordRequest request) {
         return usuarioService.resetPassword(request);
     }
+
+
     @PostMapping("/calificar")
     public MessageResponse calificarPublicacion(
             @RequestBody CalificarUsuarioRequest request

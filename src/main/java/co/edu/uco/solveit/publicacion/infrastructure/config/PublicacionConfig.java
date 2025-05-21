@@ -16,7 +16,6 @@ import co.edu.uco.solveit.publicacion.infrastructure.adapter.ZonaRepositoryAdapt
 import co.edu.uco.solveit.publicacion.infrastructure.repository.PublicacionRepository;
 import co.edu.uco.solveit.publicacion.infrastructure.repository.ReporteRepository;
 import co.edu.uco.solveit.publicacion.infrastructure.repository.ZonaRepository;
-import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

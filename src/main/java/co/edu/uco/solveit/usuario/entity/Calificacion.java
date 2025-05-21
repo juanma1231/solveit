@@ -16,9 +16,8 @@ public class Calificacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private Usuario usuario;
+    @Column(name = "user_id", nullable = false)
+    private Long usuario;
 
     private Integer valor;
 

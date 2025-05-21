@@ -69,9 +69,6 @@ public class Usuario implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Calificacion> calificaciones = new ArrayList<>();
-
     @PrePersist
     protected void onCreate() {
         fechaCreacion = LocalDateTime.now();
