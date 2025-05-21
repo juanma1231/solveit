@@ -15,4 +15,6 @@ public interface ReporteRepository extends JpaRepository<ReporteEntity, Long> {
     List<ReporteEntity> findByProcesado(boolean procesado);
     Optional<ReporteEntity> findByPublicacion_Id(Long publicacionId);
     long countByPublicacion_Id(Long publicacionId);
+
+    boolean existsByPublicacionIdAndUsuarioId(Long publicacionId, Long publicacionId1);
 }

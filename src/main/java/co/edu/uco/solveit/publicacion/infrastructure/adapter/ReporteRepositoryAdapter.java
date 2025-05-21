@@ -72,4 +72,9 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
     public long countByPublicacionId(Long publicacionId) {
         return reporteRepository.countByPublicacion_Id(publicacionId);
     }
+
+    @Override
+    public boolean existsByPublicacionIdAndUsuarioId(Long publicacionId, Long usuarioId) {
+        return reporteRepository.existsByPublicacionIdAndUsuarioId( publicacionId,usuarioId);
+    }
 }
