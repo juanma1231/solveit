@@ -33,7 +33,7 @@ public class SolicitudMapper {
 
         return SolicitudEntity.builder()
                 .id(domain.getId())
-                .nombreUsuarioInteresado(domain.getNombreUsuarioInteresado())
+                .nombreUsuarioQueSolicita(domain.getNombreUsuarioInteresado())
                 .estado(domain.getEstado())
                 .fechaCreacion(domain.getFechaCreacion())
                 .fechaActualizacion(domain.getFechaActualizacion())

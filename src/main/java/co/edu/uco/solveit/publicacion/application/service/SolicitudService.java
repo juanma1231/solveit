@@ -185,6 +185,46 @@ public class SolicitudService implements SolicitudUseCase {
                 .build();
     }
 
+    @Override
+    public MessageResponse finalizarInteres(Long interesId) {
+        Long usuarioId = usuarioApi.getCurrentUserId();
+
+        Solicitud solicitud = solicitudRepositoryPort.findById(interesId)
+                .orElseThrow(() -> new PublicacionException("Interés no encontrado"));
+
+        Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
+                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+
+        // Verificar que sea el propietario de la publicación
+        if (!publicacion.getUsuarioId().equals(usuarioId)) {
+            throw new PublicacionException("No tienes permiso para finalizar este interés");
+        }
+
+        // Verificar que el interés esté aceptado
+        if (solicitud.getEstado() != EstadoInteres.ACEPTADO) {
+            throw new PublicacionException("Solo se pueden finalizar intereses que estén en estado aceptado");
+        }
+
+        // Actualizar el estado del interés
+        solicitud.setEstado(EstadoInteres.COMPLETADO);
+        solicitudRepositoryPort.save(solicitud);
+
+        // Obtener el email del usuario interesado para enviar notificación
+        Usuario usuarioInteresado = usuarioApi.findById(solicitud.getUsuarioInteresadoId())
+                .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
+
+        // Enviar notificación por email al usuario interesado
+        emailService.enviarNotificacionInteresRechazado(
+                usuarioInteresado.getEmail(),
+                publicacion.getTitulo()
+        );
+
+        return MessageResponse.builder()
+                .message("Interés finalizado correctamente. Se ha notificado al usuario interesado.")
+                .success(true)
+                .build();
+    }
+
     private SolicitudResponse mapToInteresResponse(Solicitud Solicitud) {
         String tituloPublicacion = "";
         if (Solicitud.getPublicacion() != null) {

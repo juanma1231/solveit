@@ -47,4 +47,9 @@ public class SolicitudController {
     public MessageResponse rechazarInteres(@PathVariable Long interesId) {
         return solicitudUseCase.rechazarInteres(interesId);
     }
+
+    @PostMapping("/{interesId}/finalizar")
+    public MessageResponse finalizarInteres(@PathVariable Long interesId) {
+        return solicitudUseCase.finalizarInteres(interesId);
+    }
 }
