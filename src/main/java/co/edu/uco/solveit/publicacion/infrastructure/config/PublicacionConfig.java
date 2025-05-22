@@ -1,8 +1,10 @@
 package co.edu.uco.solveit.publicacion.infrastructure.config;
 
 import co.edu.uco.solveit.publicacion.application.service.PublicacionService;
+import co.edu.uco.solveit.publicacion.application.service.ReporteService;
 import co.edu.uco.solveit.publicacion.application.service.ZonaService;
 import co.edu.uco.solveit.publicacion.domain.port.in.PublicacionUseCase;
+import co.edu.uco.solveit.publicacion.domain.port.in.ReporteUseCase;
 import co.edu.uco.solveit.publicacion.domain.port.in.ZonaUseCase;
 import co.edu.uco.solveit.publicacion.domain.port.out.SolicitudRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
@@ -53,6 +55,17 @@ public class PublicacionConfig {
                 zonaRepositoryPort,
                 reporteRepositoryPort,
                 solicitudRepositoryPort,
+                usuarioApi);
+    }
+
+    @Bean
+    public ReporteUseCase reporteUseCase(
+            ReporteRepositoryPort reporteRepositoryPort,
+            PublicacionRepositoryPort publicacionRepositoryPort,
+            UsuarioApi usuarioApi) {
+        return new ReporteService(
+                reporteRepositoryPort,
+                publicacionRepositoryPort,
                 usuarioApi);
     }
 }
