@@ -4,6 +4,7 @@ import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
 import co.edu.uco.solveit.publicacion.domain.model.Publicacion;
 import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
 import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
+import co.edu.uco.solveit.publicacion.infrastructure.entity.PublicacionEntity;
 import co.edu.uco.solveit.publicacion.infrastructure.mapper.PublicacionMapper;
 import co.edu.uco.solveit.publicacion.infrastructure.repository.PublicacionRepository;
 import co.edu.uco.solveit.usuario.UsuarioApi;
@@ -24,14 +25,14 @@ public class PublicacionRepositoryAdapter implements PublicacionRepositoryPort {
 
     @Override
     public Publicacion save(Publicacion publicacion) {
-        co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion entity = PublicacionMapper.toEntity(publicacion);
+        PublicacionEntity entity = PublicacionMapper.toEntity(publicacion);
 
         if (entity.getUsuario() == null && publicacion.getUsuarioId() != null) {
             usuarioApi.findById(publicacion.getUsuarioId())
                     .ifPresent(entity::setUsuario);
         }
 
-        co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion savedEntity = publicacionRepository.save(entity);
+        PublicacionEntity savedEntity = publicacionRepository.save(entity);
         return PublicacionMapper.toDomain(savedEntity);
     }
 

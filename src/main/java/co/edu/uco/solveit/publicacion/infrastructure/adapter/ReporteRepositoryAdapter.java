@@ -27,7 +27,7 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
         ReporteEntity entity = ReporteMapper.toEntity(reporte);
 
         if (reporte.getPublicacionId() != null) {
-            entity.setPublicacion(PublicacionMapper.toEntity(reporte.getPublicacion()));
+            entity.setPublicacionEntity(PublicacionMapper.toEntity(reporte.getPublicacion()));
         }
 
         if (reporte.getUsuarioId() != null) {

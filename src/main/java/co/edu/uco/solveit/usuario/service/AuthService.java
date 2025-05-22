@@ -91,7 +91,6 @@ public class AuthService {
     }
 
     public MessageResponse logout() {
-        //Todo implementar cierre de sesion
         return MessageResponse.builder()
                 .message("Sesión cerrada correctamente")
                 .success(true)

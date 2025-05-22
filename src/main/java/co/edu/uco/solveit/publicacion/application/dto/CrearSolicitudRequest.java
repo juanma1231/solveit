@@ -1,5 +1,5 @@
 package co.edu.uco.solveit.publicacion.application.dto;
 
-public record CrearInteresRequest(
+public record CrearSolicitudRequest(
     Long publicacionId
 ) {}

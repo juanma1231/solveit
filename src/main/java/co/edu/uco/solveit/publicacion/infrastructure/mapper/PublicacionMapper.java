@@ -1,12 +1,12 @@
 package co.edu.uco.solveit.publicacion.infrastructure.mapper;
 
 import co.edu.uco.solveit.publicacion.domain.model.Publicacion;
-import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
 import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
+import co.edu.uco.solveit.publicacion.infrastructure.entity.PublicacionEntity;
 
 public class PublicacionMapper {
 
-    public static Publicacion toDomain(co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion entity) {
+    public static Publicacion toDomain(PublicacionEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -26,13 +26,12 @@ public class PublicacionMapper {
                 .build();
     }
 
-    public static co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion toEntity(Publicacion domain) {
+    public static PublicacionEntity toEntity(Publicacion domain) {
         if (domain == null) {
             return null;
         }
         
-        co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion entity = 
-            co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion.builder()
+        return PublicacionEntity.builder()
                 .id(domain.getId())
                 .titulo(domain.getTitulo())
                 .descripcion(domain.getDescripcion())
@@ -42,10 +41,6 @@ public class PublicacionMapper {
                 .fechaCreacion(domain.getFechaCreacion())
                 .fechaActualizacion(domain.getFechaActualizacion())
                 .build();
-                
-        // Note: usuario and zona need to be set separately as they require fetching from repositories
-        
-        return entity;
     }
     
 

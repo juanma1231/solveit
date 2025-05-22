@@ -1,6 +1,6 @@
 package co.edu.uco.solveit.publicacion.infrastructure.controller;
 
-import co.edu.uco.solveit.publicacion.application.dto.CrearInteresRequest;
+import co.edu.uco.solveit.publicacion.application.dto.CrearSolicitudRequest;
 import co.edu.uco.solveit.publicacion.application.dto.SolicitudResponse;
 import co.edu.uco.solveit.publicacion.domain.port.in.SolicitudUseCase;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
@@ -19,37 +19,42 @@ public class SolicitudController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SolicitudResponse mostraInteres(@RequestBody CrearInteresRequest request) {
-        return solicitudUseCase.mostraInteres(request);
+    public SolicitudResponse mostraSolicitud(@RequestBody CrearSolicitudRequest request) {
+        return solicitudUseCase.mostraSolicitud(request);
     }
 
     @GetMapping("/publicacion/{publicacionId}")
-    public List<SolicitudResponse> listarInteresesPorPublicacion(@PathVariable Long publicacionId) {
-        return solicitudUseCase.listarInteresesPorPublicacion(publicacionId);
+    public List<SolicitudResponse> listarSolicitudPorPublicacion(@PathVariable Long publicacionId) {
+        return solicitudUseCase.listarSolicitudPorPublicacion(publicacionId);
     }
 
     @GetMapping("/mis-publicaciones")
-    public List<SolicitudResponse> listarInteresesEnMisPublicaciones() {
-        return solicitudUseCase.listarInteresesEnMisPublicaciones();
+    public List<SolicitudResponse> listarSolicitudEnMisPublicaciones() {
+        return solicitudUseCase.listarSolicitudEnMisPublicaciones();
     }
 
     @GetMapping("/mis-solicitud")
-    public List<SolicitudResponse> listarMisIntereses() {
-        return solicitudUseCase.listarMisIntereses();
+    public List<SolicitudResponse> listarMisSolicitud() {
+        return solicitudUseCase.listarMisSolicitud();
     }
 
-    @PostMapping("/{interesId}/aceptar")
-    public MessageResponse aceptarInteres(@PathVariable Long interesId) {
-        return solicitudUseCase.aceptarInteres(interesId);
+    @PostMapping("/{solicitudId}/aceptar")
+    public MessageResponse aceptarSolicitud(@PathVariable Long solicitudId) {
+        return solicitudUseCase.aceptarSolicitud(solicitudId);
     }
 
-    @PostMapping("/{interesId}/rechazar")
-    public MessageResponse rechazarInteres(@PathVariable Long interesId) {
-        return solicitudUseCase.rechazarInteres(interesId);
+    @PostMapping("/{solicitudId}/rechazar")
+    public MessageResponse rechazarSolicitud(@PathVariable Long solicitudId) {
+        return solicitudUseCase.rechazarSolicitud(solicitudId);
     }
 
-    @PostMapping("/{interesId}/finalizar")
-    public MessageResponse finalizarInteres(@PathVariable Long interesId) {
-        return solicitudUseCase.finalizarInteres(interesId);
+    @PostMapping("/{solicitudId}/finalizar")
+    public MessageResponse finalizarSolicitud(@PathVariable Long solicitudId) {
+        return solicitudUseCase.finalizarSolicitud(solicitudId);
+    }
+
+    @GetMapping("/{solicitudId}")
+    public SolicitudResponse obtenerSolicitudPorId(@PathVariable Long solicitudId) {
+        return solicitudUseCase.obtenerSolicitudPorId(solicitudId);
     }
 }

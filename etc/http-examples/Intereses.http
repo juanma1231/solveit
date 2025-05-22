@@ -9,7 +9,7 @@ GET http://localhost:9595/api/v1/intereses/mis-intereses
 GET http://localhost:9595/api/v1/intereses/mis-publicaciones
 
 ###
-GET http://localhost:9595/api/v1/intereses/publicacion/{{publicacionId}}
+GET http://localhost:9595/api/v1/intereses/publicacionEntity/{{publicacionId}}
 
 
 ###

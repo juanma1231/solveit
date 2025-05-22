@@ -3,8 +3,8 @@ package co.edu.uco.solveit.publicacion.infrastructure.adapter;
 import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
 import co.edu.uco.solveit.publicacion.domain.model.Solicitud;
 import co.edu.uco.solveit.publicacion.domain.port.out.SolicitudRepositoryPort;
+import co.edu.uco.solveit.publicacion.infrastructure.entity.PublicacionEntity;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.SolicitudEntity;
-import co.edu.uco.solveit.publicacion.infrastructure.entity.Publicacion;
 import co.edu.uco.solveit.publicacion.infrastructure.mapper.SolicitudMapper;
 import co.edu.uco.solveit.publicacion.infrastructure.repository.SolicitudRepository;
 import co.edu.uco.solveit.publicacion.infrastructure.repository.PublicacionRepository;
@@ -25,18 +25,18 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
     private final UsuarioApi usuarioApi;
 
     @Override
-    public Solicitud save(Solicitud Solicitud) {
-        SolicitudEntity entity = SolicitudMapper.toEntity(Solicitud);
+    public Solicitud save(Solicitud solicitud) {
+        SolicitudEntity entity = SolicitudMapper.toEntity(solicitud);
 
         // Set the publicacion if it's not set but we have the ID
-        if (entity.getPublicacion() == null && Solicitud.getPublicacionId() != null) {
-            publicacionRepository.findById(Solicitud.getPublicacionId())
-                    .ifPresent(entity::setPublicacion);
+        if (entity.getPublicacionEntity() == null && solicitud.getPublicacionId() != null) {
+            publicacionRepository.findById(solicitud.getPublicacionId())
+                    .ifPresent(entity::setPublicacionEntity);
         }
 
         // Set the usuario if it's not set but we have the ID
-        if (entity.getUsuarioQueSolicita() == null && Solicitud.getUsuarioInteresadoId() != null) {
-            usuarioApi.findById(Solicitud.getUsuarioInteresadoId())
+        if (entity.getUsuarioQueSolicita() == null && solicitud.getUsuarioInteresadoId() != null) {
+            usuarioApi.findById(solicitud.getUsuarioInteresadoId())
                     .ifPresent(entity::setUsuarioQueSolicita);
         }
 
@@ -52,7 +52,7 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
 
     @Override
     public List<Solicitud> findByPublicacionId(Long publicacionId) {
-        Optional<Publicacion> publicacion = publicacionRepository.findById(publicacionId);
+        Optional<PublicacionEntity> publicacion = publicacionRepository.findById(publicacionId);
         return publicacion.map(value -> solicitudRepository.findByPublicacion(value).stream()
                 .map(SolicitudMapper::toDomain)
                 .toList()).orElseGet(List::of);
@@ -60,7 +60,7 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
 
     @Override
     public List<Solicitud> findByPublicacionIdAndEstado(Long publicacionId, EstadoInteres estado) {
-        Optional<Publicacion> publicacion = publicacionRepository.findById(publicacionId);
+        Optional<PublicacionEntity> publicacion = publicacionRepository.findById(publicacionId);
         if (publicacion.isEmpty()) {
             return List.of();
         }
@@ -102,7 +102,7 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
 
     @Override
     public Optional<Solicitud> findByPublicacionIdAndUsuarioInteresadoId(Long publicacionId, Long usuarioInteresadoId) {
-        Optional<Publicacion> publicacion = publicacionRepository.findById(publicacionId);
+        Optional<PublicacionEntity> publicacion = publicacionRepository.findById(publicacionId);
         Optional<Usuario> usuario = usuarioApi.findById(usuarioInteresadoId);
         
         if (publicacion.isEmpty() || usuario.isEmpty()) {
@@ -115,7 +115,7 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
 
     @Override
     public boolean existsByPublicacionIdAndUsuarioInteresadoId(Long publicacionId, Long usuarioInteresadoId) {
-        Optional<Publicacion> publicacion = publicacionRepository.findById(publicacionId);
+        Optional<PublicacionEntity> publicacion = publicacionRepository.findById(publicacionId);
         Optional<Usuario> usuario = usuarioApi.findById(usuarioInteresadoId);
         
         if (publicacion.isEmpty() || usuario.isEmpty()) {

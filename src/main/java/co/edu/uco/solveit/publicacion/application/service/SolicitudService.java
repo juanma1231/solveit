@@ -1,6 +1,6 @@
 package co.edu.uco.solveit.publicacion.application.service;
 
-import co.edu.uco.solveit.publicacion.application.dto.CrearInteresRequest;
+import co.edu.uco.solveit.publicacion.application.dto.CrearSolicitudRequest;
 import co.edu.uco.solveit.publicacion.application.dto.SolicitudResponse;
 import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
 import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
@@ -28,7 +28,7 @@ public class SolicitudService implements SolicitudUseCase {
     private final EmailService emailService;
 
     @Override
-    public SolicitudResponse mostraInteres(CrearInteresRequest request) {
+    public SolicitudResponse mostraSolicitud(CrearSolicitudRequest request) {
         Long usuarioId = usuarioApi.getCurrentUserId();
         String nombreUsuario = usuarioApi.getCurrentUserFullName();
 
@@ -71,7 +71,7 @@ public class SolicitudService implements SolicitudUseCase {
     }
 
     @Override
-    public List<SolicitudResponse> listarInteresesPorPublicacion(Long publicacionId) {
+    public List<SolicitudResponse> listarSolicitudPorPublicacion(Long publicacionId) {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
@@ -89,7 +89,7 @@ public class SolicitudService implements SolicitudUseCase {
     }
 
     @Override
-    public List<SolicitudResponse> listarInteresesEnMisPublicaciones() {
+    public List<SolicitudResponse> listarSolicitudEnMisPublicaciones() {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         // Obtener todas las publicaciones del usuario
@@ -103,7 +103,7 @@ public class SolicitudService implements SolicitudUseCase {
     }
 
     @Override
-    public List<SolicitudResponse> listarMisIntereses() {
+    public List<SolicitudResponse> listarMisSolicitud() {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         List<Solicitud> intereses = solicitudRepositoryPort.findByUsuarioInteresadoId(usuarioId);
@@ -113,13 +113,13 @@ public class SolicitudService implements SolicitudUseCase {
     }
 
     @Override
-    public MessageResponse aceptarInteres(Long interesId) {
+    public MessageResponse aceptarSolicitud(Long interesId) {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
-        Solicitud Solicitud = solicitudRepositoryPort.findById(interesId)
+        Solicitud solicitud = solicitudRepositoryPort.findById(interesId)
                 .orElseThrow(() -> new PublicacionException("Interés no encontrado"));
 
-        Publicacion publicacion = publicacionRepositoryPort.findById(Solicitud.getPublicacionId())
+        Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
 
         // Verificar que sea el propietario de la publicación
@@ -128,13 +128,13 @@ public class SolicitudService implements SolicitudUseCase {
         }
 
         // Verificar que el interés esté pendiente
-        if (Solicitud.getEstado() != EstadoInteres.PENDIENTE) {
+        if (solicitud.getEstado() != EstadoInteres.PENDIENTE) {
             throw new PublicacionException("Este interés ya ha sido procesado");
         }
 
         // Actualizar el estado del interés
-        Solicitud.setEstado(EstadoInteres.ACEPTADO);
-        solicitudRepositoryPort.save(Solicitud);
+        solicitud.setEstado(EstadoInteres.ACEPTADO);
+        solicitudRepositoryPort.save(solicitud);
 
         // Aquí se activaría el chat, pero eso sería responsabilidad de otro módulo
         // Por ahora, solo devolvemos un mensaje de éxito
@@ -146,13 +146,13 @@ public class SolicitudService implements SolicitudUseCase {
     }
 
     @Override
-    public MessageResponse rechazarInteres(Long interesId) {
+    public MessageResponse rechazarSolicitud(Long interesId) {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
-        Solicitud Solicitud = solicitudRepositoryPort.findById(interesId)
+        Solicitud solicitud = solicitudRepositoryPort.findById(interesId)
                 .orElseThrow(() -> new PublicacionException("Interés no encontrado"));
 
-        Publicacion publicacion = publicacionRepositoryPort.findById(Solicitud.getPublicacionId())
+        Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
 
         // Verificar que sea el propietario de la publicación
@@ -161,16 +161,16 @@ public class SolicitudService implements SolicitudUseCase {
         }
 
         // Verificar que el interés esté pendiente
-        if (Solicitud.getEstado() != EstadoInteres.PENDIENTE) {
+        if (solicitud.getEstado() != EstadoInteres.PENDIENTE) {
             throw new PublicacionException("Este interés ya ha sido procesado");
         }
 
         // Actualizar el estado del interés
-        Solicitud.setEstado(EstadoInteres.RECHAZADO);
-        solicitudRepositoryPort.save(Solicitud);
+        solicitud.setEstado(EstadoInteres.RECHAZADO);
+        solicitudRepositoryPort.save(solicitud);
 
         // Obtener el email del usuario interesado para enviar notificación
-        Usuario usuarioInteresado = usuarioApi.findById(Solicitud.getUsuarioInteresadoId())
+        Usuario usuarioInteresado = usuarioApi.findById(solicitud.getUsuarioInteresadoId())
                 .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
 
         // Enviar notificación por email al usuario interesado
@@ -186,7 +186,7 @@ public class SolicitudService implements SolicitudUseCase {
     }
 
     @Override
-    public MessageResponse finalizarInteres(Long interesId) {
+    public MessageResponse finalizarSolicitud(Long interesId) {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         Solicitud solicitud = solicitudRepositoryPort.findById(interesId)
@@ -225,25 +225,33 @@ public class SolicitudService implements SolicitudUseCase {
                 .build();
     }
 
-    private SolicitudResponse mapToInteresResponse(Solicitud Solicitud) {
+    @Override
+    public SolicitudResponse obtenerSolicitudPorId(Long solicitudId) {
+        Solicitud solicitud = solicitudRepositoryPort.findById(solicitudId)
+                .orElseThrow(() -> new PublicacionException("Solicitud no encontrada"));
+
+        return mapToInteresResponse(solicitud);
+    }
+
+    private SolicitudResponse mapToInteresResponse(Solicitud solicitud) {
         String tituloPublicacion = "";
-        if (Solicitud.getPublicacion() != null) {
-            tituloPublicacion = Solicitud.getPublicacion().getTitulo();
-        } else if (Solicitud.getPublicacionId() != null) {
-            tituloPublicacion = publicacionRepositoryPort.findById(Solicitud.getPublicacionId())
+        if (solicitud.getPublicacion() != null) {
+            tituloPublicacion = solicitud.getPublicacion().getTitulo();
+        } else if (solicitud.getPublicacionId() != null) {
+            tituloPublicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
                     .map(Publicacion::getTitulo)
                     .orElse("");
         }
 
         return SolicitudResponse.builder()
-                .id(Solicitud.getId())
-                .publicacionId(Solicitud.getPublicacionId())
+                .id(solicitud.getId())
+                .publicacionId(solicitud.getPublicacionId())
                 .tituloPublicacion(tituloPublicacion)
-                .usuarioInteresadoId(Solicitud.getUsuarioInteresadoId())
-                .nombreUsuarioInteresado(Solicitud.getNombreUsuarioInteresado())
-                .estado(Solicitud.getEstado())
-                .fechaCreacion(Solicitud.getFechaCreacion())
-                .fechaActualizacion(Solicitud.getFechaActualizacion())
+                .usuarioInteresadoId(solicitud.getUsuarioInteresadoId())
+                .nombreUsuarioInteresado(solicitud.getNombreUsuarioInteresado())
+                .estado(solicitud.getEstado())
+                .fechaCreacion(solicitud.getFechaCreacion())
+                .fechaActualizacion(solicitud.getFechaActualizacion())
                 .build();
     }
 }

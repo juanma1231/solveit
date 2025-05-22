@@ -11,8 +11,8 @@ public class ReporteMapper {
         }
         return Reporte.builder()
                 .id(entity.getId())
-                .publicacionId(entity.getPublicacion().getId())
-                .publicacion(PublicacionMapper.toDomain(entity.getPublicacion()))
+                .publicacionId(entity.getPublicacionEntity().getId())
+                .publicacion(PublicacionMapper.toDomain(entity.getPublicacionEntity()))
                 .usuarioId(entity.getUsuario().getId())
                 .nombreUsuario(entity.getUsuario().getNombreCompleto())
                 .motivo(entity.getMotivo())
@@ -26,16 +26,11 @@ public class ReporteMapper {
             return null;
         }
         
-        ReporteEntity entity =
-            ReporteEntity.builder()
+        return ReporteEntity.builder()
                 .id(domain.getId())
                 .motivo(domain.getMotivo())
                 .fechaReporte(domain.getFechaReporte())
                 .procesado(domain.isProcesado())
                 .build();
-                
-        // Note: publicacion and usuario need to be set separately as they require fetching from repositories
-        
-        return entity;
     }
 }

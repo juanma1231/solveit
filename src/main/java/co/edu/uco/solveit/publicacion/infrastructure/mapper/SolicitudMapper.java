@@ -16,8 +16,8 @@ public class SolicitudMapper {
 
         return Solicitud.builder()
                 .id(entity.getId())
-                .publicacionId(entity.getPublicacion() != null ? entity.getPublicacion().getId() : null)
-                .publicacion(entity.getPublicacion() != null ? PublicacionMapper.toDomain(entity.getPublicacion()) : null)
+                .publicacionId(entity.getPublicacionEntity() != null ? entity.getPublicacionEntity().getId() : null)
+                .publicacion(entity.getPublicacionEntity() != null ? PublicacionMapper.toDomain(entity.getPublicacionEntity()) : null)
                 .usuarioInteresadoId(entity.getUsuarioQueSolicita() != null ? entity.getUsuarioQueSolicita().getId() : null)
                 .nombreUsuarioInteresado(entity.getNombreUsuarioQueSolicita())
                 .estado(entity.getEstado())

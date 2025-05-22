@@ -21,7 +21,6 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final CalificacionRepository calificacionRepository;
-    //TOdo Aquí se inyectar un servicio de email para enviar correos de recuperación
 
     public MessageResponse actualizarDatosUsuario(ActualizarUsuarioRequest request) {
 

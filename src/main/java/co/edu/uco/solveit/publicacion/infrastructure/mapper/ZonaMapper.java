@@ -4,6 +4,8 @@ import co.edu.uco.solveit.publicacion.domain.model.Zona;
 
 public class ZonaMapper {
 
+    private ZonaMapper() {}
+
     public static Zona toDomain(co.edu.uco.solveit.publicacion.infrastructure.entity.Zona entity) {
         if (entity == null) {
             return null;
