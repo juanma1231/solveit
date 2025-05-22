@@ -1,13 +1,13 @@
 package co.edu.uco.solveit.publicacion.application.service;
 
 import co.edu.uco.solveit.publicacion.application.dto.CrearInteresRequest;
-import co.edu.uco.solveit.publicacion.application.dto.InteresResponse;
+import co.edu.uco.solveit.publicacion.application.dto.SolicitudResponse;
 import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
 import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
-import co.edu.uco.solveit.publicacion.domain.model.Interes;
+import co.edu.uco.solveit.publicacion.domain.model.Solicitud;
 import co.edu.uco.solveit.publicacion.domain.model.Publicacion;
-import co.edu.uco.solveit.publicacion.domain.port.in.InteresUseCase;
-import co.edu.uco.solveit.publicacion.domain.port.out.InteresRepositoryPort;
+import co.edu.uco.solveit.publicacion.domain.port.in.SolicitudUseCase;
+import co.edu.uco.solveit.publicacion.domain.port.out.SolicitudRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
 import co.edu.uco.solveit.publicacion.infrastructure.service.EmailService;
 import co.edu.uco.solveit.usuario.UsuarioApi;
@@ -20,15 +20,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class InteresService implements InteresUseCase {
+public class SolicitudService implements SolicitudUseCase {
 
-    private final InteresRepositoryPort interesRepositoryPort;
+    private final SolicitudRepositoryPort solicitudRepositoryPort;
     private final PublicacionRepositoryPort publicacionRepositoryPort;
     private final UsuarioApi usuarioApi;
     private final EmailService emailService;
 
     @Override
-    public InteresResponse mostraInteres(CrearInteresRequest request) {
+    public SolicitudResponse mostraInteres(CrearInteresRequest request) {
         Long usuarioId = usuarioApi.getCurrentUserId();
         String nombreUsuario = usuarioApi.getCurrentUserFullName();
 
@@ -42,11 +42,11 @@ public class InteresService implements InteresUseCase {
         }
 
         // Verificar que no haya expresado interés previamente
-        if (interesRepositoryPort.existsByPublicacionIdAndUsuarioInteresadoId(publicacion.getId(), usuarioId)) {
+        if (solicitudRepositoryPort.existsByPublicacionIdAndUsuarioInteresadoId(publicacion.getId(), usuarioId)) {
             throw new PublicacionException("Ya has mostrado interés en esta publicación");
         }
 
-        Interes interes = Interes.builder()
+        Solicitud solicitud = Solicitud.builder()
                 .publicacionId(publicacion.getId())
                 .publicacion(publicacion)
                 .usuarioInteresadoId(usuarioId)
@@ -54,7 +54,7 @@ public class InteresService implements InteresUseCase {
                 .estado(EstadoInteres.PENDIENTE)
                 .build();
 
-        Interes interesGuardado = interesRepositoryPort.save(interes);
+        Solicitud interesGuardado = solicitudRepositoryPort.save(solicitud);
 
         // Obtener el email del propietario de la publicación para enviar notificación
         Usuario propietario = usuarioApi.findById(publicacion.getUsuarioId())
@@ -71,7 +71,7 @@ public class InteresService implements InteresUseCase {
     }
 
     @Override
-    public List<InteresResponse> listarInteresesPorPublicacion(Long publicacionId) {
+    public List<SolicitudResponse> listarInteresesPorPublicacion(Long publicacionId) {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
@@ -82,14 +82,14 @@ public class InteresService implements InteresUseCase {
             throw new PublicacionException("No tienes permiso para ver los intereses de esta publicación");
         }
 
-        List<Interes> intereses = interesRepositoryPort.findByPublicacionId(publicacionId);
+        List<Solicitud> intereses = solicitudRepositoryPort.findByPublicacionId(publicacionId);
         return intereses.stream()
                 .map(this::mapToInteresResponse)
                 .toList();
     }
 
     @Override
-    public List<InteresResponse> listarInteresesEnMisPublicaciones() {
+    public List<SolicitudResponse> listarInteresesEnMisPublicaciones() {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         // Obtener todas las publicaciones del usuario
@@ -97,16 +97,16 @@ public class InteresService implements InteresUseCase {
 
         // Obtener todos los intereses para esas publicaciones
         return publicaciones.stream()
-                .flatMap(publicacion -> interesRepositoryPort.findByPublicacionId(publicacion.getId()).stream())
+                .flatMap(publicacion -> solicitudRepositoryPort.findByPublicacionId(publicacion.getId()).stream())
                 .map(this::mapToInteresResponse)
                 .toList();
     }
 
     @Override
-    public List<InteresResponse> listarMisIntereses() {
+    public List<SolicitudResponse> listarMisIntereses() {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
-        List<Interes> intereses = interesRepositoryPort.findByUsuarioInteresadoId(usuarioId);
+        List<Solicitud> intereses = solicitudRepositoryPort.findByUsuarioInteresadoId(usuarioId);
         return intereses.stream()
                 .map(this::mapToInteresResponse)
                 .toList();
@@ -116,10 +116,10 @@ public class InteresService implements InteresUseCase {
     public MessageResponse aceptarInteres(Long interesId) {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
-        Interes interes = interesRepositoryPort.findById(interesId)
+        Solicitud Solicitud = solicitudRepositoryPort.findById(interesId)
                 .orElseThrow(() -> new PublicacionException("Interés no encontrado"));
 
-        Publicacion publicacion = publicacionRepositoryPort.findById(interes.getPublicacionId())
+        Publicacion publicacion = publicacionRepositoryPort.findById(Solicitud.getPublicacionId())
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
 
         // Verificar que sea el propietario de la publicación
@@ -128,13 +128,13 @@ public class InteresService implements InteresUseCase {
         }
 
         // Verificar que el interés esté pendiente
-        if (interes.getEstado() != EstadoInteres.PENDIENTE) {
+        if (Solicitud.getEstado() != EstadoInteres.PENDIENTE) {
             throw new PublicacionException("Este interés ya ha sido procesado");
         }
 
         // Actualizar el estado del interés
-        interes.setEstado(EstadoInteres.ACEPTADO);
-        interesRepositoryPort.save(interes);
+        Solicitud.setEstado(EstadoInteres.ACEPTADO);
+        solicitudRepositoryPort.save(Solicitud);
 
         // Aquí se activaría el chat, pero eso sería responsabilidad de otro módulo
         // Por ahora, solo devolvemos un mensaje de éxito
@@ -149,10 +149,10 @@ public class InteresService implements InteresUseCase {
     public MessageResponse rechazarInteres(Long interesId) {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
-        Interes interes = interesRepositoryPort.findById(interesId)
+        Solicitud Solicitud = solicitudRepositoryPort.findById(interesId)
                 .orElseThrow(() -> new PublicacionException("Interés no encontrado"));
 
-        Publicacion publicacion = publicacionRepositoryPort.findById(interes.getPublicacionId())
+        Publicacion publicacion = publicacionRepositoryPort.findById(Solicitud.getPublicacionId())
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
 
         // Verificar que sea el propietario de la publicación
@@ -161,16 +161,16 @@ public class InteresService implements InteresUseCase {
         }
 
         // Verificar que el interés esté pendiente
-        if (interes.getEstado() != EstadoInteres.PENDIENTE) {
+        if (Solicitud.getEstado() != EstadoInteres.PENDIENTE) {
             throw new PublicacionException("Este interés ya ha sido procesado");
         }
 
         // Actualizar el estado del interés
-        interes.setEstado(EstadoInteres.RECHAZADO);
-        interesRepositoryPort.save(interes);
+        Solicitud.setEstado(EstadoInteres.RECHAZADO);
+        solicitudRepositoryPort.save(Solicitud);
 
         // Obtener el email del usuario interesado para enviar notificación
-        Usuario usuarioInteresado = usuarioApi.findById(interes.getUsuarioInteresadoId())
+        Usuario usuarioInteresado = usuarioApi.findById(Solicitud.getUsuarioInteresadoId())
                 .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
 
         // Enviar notificación por email al usuario interesado
@@ -185,25 +185,25 @@ public class InteresService implements InteresUseCase {
                 .build();
     }
 
-    private InteresResponse mapToInteresResponse(Interes interes) {
+    private SolicitudResponse mapToInteresResponse(Solicitud Solicitud) {
         String tituloPublicacion = "";
-        if (interes.getPublicacion() != null) {
-            tituloPublicacion = interes.getPublicacion().getTitulo();
-        } else if (interes.getPublicacionId() != null) {
-            tituloPublicacion = publicacionRepositoryPort.findById(interes.getPublicacionId())
+        if (Solicitud.getPublicacion() != null) {
+            tituloPublicacion = Solicitud.getPublicacion().getTitulo();
+        } else if (Solicitud.getPublicacionId() != null) {
+            tituloPublicacion = publicacionRepositoryPort.findById(Solicitud.getPublicacionId())
                     .map(Publicacion::getTitulo)
                     .orElse("");
         }
 
-        return InteresResponse.builder()
-                .id(interes.getId())
-                .publicacionId(interes.getPublicacionId())
+        return SolicitudResponse.builder()
+                .id(Solicitud.getId())
+                .publicacionId(Solicitud.getPublicacionId())
                 .tituloPublicacion(tituloPublicacion)
-                .usuarioInteresadoId(interes.getUsuarioInteresadoId())
-                .nombreUsuarioInteresado(interes.getNombreUsuarioInteresado())
-                .estado(interes.getEstado())
-                .fechaCreacion(interes.getFechaCreacion())
-                .fechaActualizacion(interes.getFechaActualizacion())
+                .usuarioInteresadoId(Solicitud.getUsuarioInteresadoId())
+                .nombreUsuarioInteresado(Solicitud.getNombreUsuarioInteresado())
+                .estado(Solicitud.getEstado())
+                .fechaCreacion(Solicitud.getFechaCreacion())
+                .fechaActualizacion(Solicitud.getFechaActualizacion())
                 .build();
     }
 }

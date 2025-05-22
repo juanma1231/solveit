@@ -61,8 +61,4 @@ public class PublicacionController {
         return publicacionUseCase.reportarPublicacion(id, request);
     }
 
-    @PostMapping("/{id}/finalizar")
-    public MessageResponse finalizarPublicacion(@PathVariable Long id) {
-        return publicacionUseCase.finalizarPublicacion(id);
-    }
 }

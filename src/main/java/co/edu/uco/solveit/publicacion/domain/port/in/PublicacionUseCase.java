@@ -17,5 +17,4 @@ public interface PublicacionUseCase {
     List<PublicacionResponse> listarMisPublicaciones();
     MessageResponse cancelarPublicacion(Long id);
     MessageResponse reportarPublicacion(Long id, ReportarPublicacionRequest request);
-    MessageResponse finalizarPublicacion(Long id);
 }

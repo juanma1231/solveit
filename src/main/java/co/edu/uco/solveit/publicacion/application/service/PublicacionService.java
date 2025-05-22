@@ -6,7 +6,7 @@ import co.edu.uco.solveit.publicacion.application.dto.PublicacionResponse;
 import co.edu.uco.solveit.publicacion.application.dto.ReportarPublicacionRequest;
 import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
 import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
-import co.edu.uco.solveit.publicacion.domain.model.Interes;
+import co.edu.uco.solveit.publicacion.domain.model.Solicitud;
 import co.edu.uco.solveit.publicacion.domain.model.Publicacion;
 import co.edu.uco.solveit.publicacion.domain.model.Reporte;
 import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
@@ -16,7 +16,7 @@ import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.port.out.ReporteRepositoryPort;
 import co.edu.uco.solveit.usuario.UsuarioApi;
 import co.edu.uco.solveit.publicacion.domain.port.out.ZonaRepositoryPort;
-import co.edu.uco.solveit.publicacion.domain.port.out.InteresRepositoryPort;
+import co.edu.uco.solveit.publicacion.domain.port.out.SolicitudRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class PublicacionService implements PublicacionUseCase {
     private final PublicacionRepositoryPort publicacionRepositoryPort;
     private final ZonaRepositoryPort zonaRepositoryPort;
     private final ReporteRepositoryPort reporteRepositoryPort;
-    private final InteresRepositoryPort interesRepositoryPort;
+    private final SolicitudRepositoryPort solicitudRepositoryPort;
     private final UsuarioApi usuarioApi;
 
     @Override
@@ -77,7 +77,7 @@ public class PublicacionService implements PublicacionUseCase {
 
         // Verificar si existen intereses pendientes o aceptados para esta publicación
         List<EstadoInteres> estadosVigentes = List.of(EstadoInteres.PENDIENTE, EstadoInteres.ACEPTADO);
-        List<Interes> interesesVigentes = interesRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
+        List<Solicitud> interesesVigentes = solicitudRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
 
         if (!interesesVigentes.isEmpty()) {
             throw new PublicacionException("No se puede actualizar una publicación que tiene intereses vigentes");
@@ -145,7 +145,7 @@ public class PublicacionService implements PublicacionUseCase {
 
         // Verificar si existen intereses pendientes o aceptados para esta publicación
         List<EstadoInteres> estadosVigentes = List.of(EstadoInteres.ACEPTADO);
-        List<Interes> interesesVigentes = interesRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
+        List<Solicitud> interesesVigentes = solicitudRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
 
         if (!interesesVigentes.isEmpty()) {
             throw new PublicacionException("No se puede cancelar una publicación que tiene intereses vigentes");
@@ -192,35 +192,6 @@ public class PublicacionService implements PublicacionUseCase {
 
         return MessageResponse.builder()
                 .message("Publicación reportada correctamente")
-                .success(true)
-                .build();
-    }
-
-    @Override
-    public MessageResponse finalizarPublicacion(Long id) {
-        Long usuarioId = usuarioApi.getCurrentUserId();
-
-        Publicacion publicacion = publicacionRepositoryPort.findById(id)
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
-
-        if (!publicacion.getUsuarioId().equals(usuarioId)) {
-            throw new PublicacionException("No tienes permiso para finalizar esta publicación");
-        }
-
-        if (publicacion.getEstado() == EstadoPublicacion.COMPLETADA) {
-            throw new PublicacionException("La publicación ya está finalizada");
-        }
-
-        if (publicacion.getEstado() == EstadoPublicacion.CANCELADA || 
-                publicacion.getEstado() == EstadoPublicacion.BLOQUEADA) {
-            throw new PublicacionException("No se puede finalizar una publicación cancelada o bloqueada");
-        }
-
-        publicacion.setEstado(EstadoPublicacion.COMPLETADA);
-        publicacionRepositoryPort.save(publicacion);
-
-        return MessageResponse.builder()
-                .message("Publicación finalizada correctamente")
                 .success(true)
                 .build();
     }

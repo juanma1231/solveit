@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "intereses")
-public class InteresEntity {
+@Table(name = "solicitudes")
+public class SolicitudEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +25,11 @@ public class InteresEntity {
     private Publicacion publicacion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_interesado_id", nullable = false)
-    private Usuario usuarioInteresado;
+    @JoinColumn(name = "usuario_solicitud_id", nullable = false)
+    private Usuario usuarioQueSolicita;
 
-    @Column(name = "nombre_usuario_interesado", nullable = false)
-    private String nombreUsuarioInteresado;
+    @Column(name = "nombre_usuario_solicitud", nullable = false)
+    private String nombreUsuarioQueSolicita;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

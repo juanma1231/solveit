@@ -1,38 +1,37 @@
 package co.edu.uco.solveit.publicacion.infrastructure.mapper;
 
-import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
-import co.edu.uco.solveit.publicacion.domain.model.Interes;
-import co.edu.uco.solveit.publicacion.infrastructure.entity.InteresEntity;
+import co.edu.uco.solveit.publicacion.domain.model.Solicitud;
+import co.edu.uco.solveit.publicacion.infrastructure.entity.SolicitudEntity;
 
-public class InteresMapper {
+public class SolicitudMapper {
 
-    private InteresMapper() {
+    private SolicitudMapper() {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Interes toDomain(InteresEntity entity) {
+    public static Solicitud toDomain(SolicitudEntity entity) {
         if (entity == null) {
             return null;
         }
 
-        return Interes.builder()
+        return Solicitud.builder()
                 .id(entity.getId())
                 .publicacionId(entity.getPublicacion() != null ? entity.getPublicacion().getId() : null)
                 .publicacion(entity.getPublicacion() != null ? PublicacionMapper.toDomain(entity.getPublicacion()) : null)
-                .usuarioInteresadoId(entity.getUsuarioInteresado() != null ? entity.getUsuarioInteresado().getId() : null)
-                .nombreUsuarioInteresado(entity.getNombreUsuarioInteresado())
+                .usuarioInteresadoId(entity.getUsuarioQueSolicita() != null ? entity.getUsuarioQueSolicita().getId() : null)
+                .nombreUsuarioInteresado(entity.getNombreUsuarioQueSolicita())
                 .estado(entity.getEstado())
                 .fechaCreacion(entity.getFechaCreacion())
                 .fechaActualizacion(entity.getFechaActualizacion())
                 .build();
     }
 
-    public static InteresEntity toEntity(Interes domain) {
+    public static SolicitudEntity toEntity(Solicitud domain) {
         if (domain == null) {
             return null;
         }
 
-        return InteresEntity.builder()
+        return SolicitudEntity.builder()
                 .id(domain.getId())
                 .nombreUsuarioInteresado(domain.getNombreUsuarioInteresado())
                 .estado(domain.getEstado())
