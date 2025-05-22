@@ -51,6 +51,8 @@ public class SolicitudService implements SolicitudUseCase {
                 .publicacion(publicacion)
                 .usuarioInteresadoId(usuarioId)
                 .nombreUsuarioInteresado(nombreUsuario)
+                .titulo(request.titulo())
+                .descripcion(request.descripcion())
                 .estado(EstadoInteres.PENDIENTE)
                 .build();
 
@@ -249,6 +251,8 @@ public class SolicitudService implements SolicitudUseCase {
                 .tituloPublicacion(tituloPublicacion)
                 .usuarioInteresadoId(solicitud.getUsuarioInteresadoId())
                 .nombreUsuarioInteresado(solicitud.getNombreUsuarioInteresado())
+                .titulo(solicitud.getTitulo())
+                .descripcion(solicitud.getDescripcion())
                 .estado(solicitud.getEstado())
                 .fechaCreacion(solicitud.getFechaCreacion())
                 .fechaActualizacion(solicitud.getFechaActualizacion())

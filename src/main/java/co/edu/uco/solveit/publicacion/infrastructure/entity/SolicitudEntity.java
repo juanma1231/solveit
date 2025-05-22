@@ -31,6 +31,12 @@ public class SolicitudEntity {
     @Column(name = "nombre_usuario_solicitud", nullable = false)
     private String nombreUsuarioQueSolicita;
 
+    @Column(name = "titulo", nullable = false)
+    private String titulo;
+
+    @Column(name = "descripcion", columnDefinition = "TEXT")
+    private String descripcion;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoInteres estado;

@@ -15,6 +15,8 @@ public class Solicitud {
     private Publicacion publicacion;
     private Long usuarioInteresadoId;
     private String nombreUsuarioInteresado;
+    private String titulo;
+    private String descripcion;
     private EstadoInteres estado;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaActualizacion;

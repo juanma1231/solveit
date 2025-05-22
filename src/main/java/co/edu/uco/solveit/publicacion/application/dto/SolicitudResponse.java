@@ -12,6 +12,8 @@ public record SolicitudResponse(
     String tituloPublicacion,
     Long usuarioInteresadoId,
     String nombreUsuarioInteresado,
+    String titulo,
+    String descripcion,
     EstadoInteres estado,
     LocalDateTime fechaCreacion,
     LocalDateTime fechaActualizacion
