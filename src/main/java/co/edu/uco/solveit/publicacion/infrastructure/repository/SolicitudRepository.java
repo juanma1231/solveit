@@ -15,9 +15,9 @@ import java.util.Optional;
 public interface SolicitudRepository extends JpaRepository<SolicitudEntity, Long> {
     List<SolicitudEntity> findByPublicacion(PublicacionEntity publicacionEntity);
     List<SolicitudEntity> findByPublicacionAndEstado(PublicacionEntity publicacionEntity, EstadoInteres estado);
-    List<SolicitudEntity> findByUsuarioInteresado(Usuario usuarioInteresado);
-    List<SolicitudEntity> findByUsuarioInteresadoAndEstado(Usuario usuarioInteresado, EstadoInteres estado);
-    Optional<SolicitudEntity> findByPublicacionAndUsuarioInteresado(PublicacionEntity publicacionEntity, Usuario usuarioInteresado);
-    boolean existsByPublicacionAndUsuarioInteresado(PublicacionEntity publicacionEntity, Usuario usuarioInteresado);
+    List<SolicitudEntity> findByUsuarioQueSolicita(Usuario usuarioQueSolicita);
+    List<SolicitudEntity> findByUsuarioQueSolicitaAndEstado(Usuario usuarioQueSolicita, EstadoInteres estado);
+    Optional<SolicitudEntity> findByPublicacionAndUsuarioQueSolicita(PublicacionEntity publicacionEntity, Usuario usuarioQueSolicita);
+    boolean existsByPublicacionAndUsuarioQueSolicita(PublicacionEntity publicacionEntity, Usuario usuarioQueSolicita);
     List<SolicitudEntity> findByPublicacionIdAndEstadoIn(Long publicacionId, List<EstadoInteres> estados);
 }

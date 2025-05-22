@@ -11,8 +11,8 @@ public class ReporteMapper {
         }
         return Reporte.builder()
                 .id(entity.getId())
-                .publicacionId(entity.getPublicacionEntity().getId())
-                .publicacion(PublicacionMapper.toDomain(entity.getPublicacionEntity()))
+                .publicacionId(entity.getPublicacion().getId())
+                .publicacion(PublicacionMapper.toDomain(entity.getPublicacion()))
                 .usuarioId(entity.getUsuario().getId())
                 .nombreUsuario(entity.getUsuario().getNombreCompleto())
                 .motivo(entity.getMotivo())

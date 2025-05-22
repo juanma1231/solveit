@@ -22,7 +22,7 @@ public class SolicitudEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publicacion_id", nullable = false)
-    private PublicacionEntity publicacionEntity;
+    private PublicacionEntity publicacion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_solicitud_id", nullable = false)

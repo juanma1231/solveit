@@ -29,9 +29,9 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
         SolicitudEntity entity = SolicitudMapper.toEntity(solicitud);
 
         // Set the publicacion if it's not set but we have the ID
-        if (entity.getPublicacionEntity() == null && solicitud.getPublicacionId() != null) {
+        if (entity.getPublicacion() == null && solicitud.getPublicacionId() != null) {
             publicacionRepository.findById(solicitud.getPublicacionId())
-                    .ifPresent(entity::setPublicacionEntity);
+                    .ifPresent(entity::setPublicacion);
         }
 
         // Set the usuario if it's not set but we have the ID
@@ -82,7 +82,7 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
     @Override
     public List<Solicitud> findByUsuarioInteresadoId(Long usuarioInteresadoId) {
         Optional<Usuario> usuario = usuarioApi.findById(usuarioInteresadoId);
-        return usuario.map(value -> solicitudRepository.findByUsuarioInteresado(value).stream()
+        return usuario.map(value -> solicitudRepository.findByUsuarioQueSolicita(value).stream()
                 .map(SolicitudMapper::toDomain)
                 .toList()).orElseGet(List::of);
     }
@@ -95,7 +95,7 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
         }
         EstadoInteres entityEstado =
                 EstadoInteres.valueOf(estado.name());
-        return solicitudRepository.findByUsuarioInteresadoAndEstado(usuario.get(), entityEstado).stream()
+        return solicitudRepository.findByUsuarioQueSolicitaAndEstado(usuario.get(), entityEstado).stream()
                 .map(SolicitudMapper::toDomain)
                 .toList();
     }
@@ -109,7 +109,7 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
             return Optional.empty();
         }
         
-        return solicitudRepository.findByPublicacionAndUsuarioInteresado(publicacion.get(), usuario.get())
+        return solicitudRepository.findByPublicacionAndUsuarioQueSolicita(publicacion.get(), usuario.get())
                 .map(SolicitudMapper::toDomain);
     }
 
@@ -122,7 +122,7 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
             return false;
         }
         
-        return solicitudRepository.existsByPublicacionAndUsuarioInteresado(publicacion.get(), usuario.get());
+        return solicitudRepository.existsByPublicacionAndUsuarioQueSolicita(publicacion.get(), usuario.get());
     }
 
     @Override

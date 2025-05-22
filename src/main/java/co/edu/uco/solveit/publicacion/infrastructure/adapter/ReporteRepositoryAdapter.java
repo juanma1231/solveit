@@ -27,7 +27,7 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
         ReporteEntity entity = ReporteMapper.toEntity(reporte);
 
         if (reporte.getPublicacionId() != null) {
-            entity.setPublicacionEntity(PublicacionMapper.toEntity(reporte.getPublicacion()));
+            entity.setPublicacion(PublicacionMapper.toEntity(reporte.getPublicacion()));
         }
 
         if (reporte.getUsuarioId() != null) {
@@ -75,6 +75,6 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
 
     @Override
     public boolean existsByPublicacionIdAndUsuarioId(Long publicacionId, Long usuarioId) {
-        return reporteRepository.existsByPublicacionIdAndUsuarioId( publicacionId,usuarioId);
+        return reporteRepository.existsByPublicacion_IdAndUsuario_Id( publicacionId,usuarioId);
     }
 }
