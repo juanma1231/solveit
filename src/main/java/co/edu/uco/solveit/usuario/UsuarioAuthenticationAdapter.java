@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCONTRADO;
+
 @Component
 @RequiredArgsConstructor
 class UsuarioAuthenticationAdapter implements UsuarioApi {
