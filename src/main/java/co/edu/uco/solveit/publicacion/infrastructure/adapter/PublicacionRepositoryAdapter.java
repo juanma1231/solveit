@@ -52,7 +52,7 @@ public class PublicacionRepositoryAdapter implements PublicacionRepositoryPort {
     @Override
     public List<Publicacion> findByUsuarioId(Long usuarioId) {
         Usuario usuario = usuarioApi.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException(USUARIO_NO_ENCONTRADO));
         return publicacionRepository.findByUsuario(usuario).stream()
                 .map(PublicacionMapper::toDomain)
                 .toList();
@@ -79,7 +79,7 @@ public class PublicacionRepositoryAdapter implements PublicacionRepositoryPort {
     @Override
     public List<Publicacion> findByUsuarioIdAndEstado(Long usuarioId, EstadoPublicacion estado) {
         Usuario usuario = usuarioApi.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException(USUARIO_NO_ENCONTRADO));
         EstadoPublicacion entityEstado =
                 EstadoPublicacion.valueOf(estado.name());
         return publicacionRepository.findByUsuarioAndEstado(usuario, entityEstado).stream()

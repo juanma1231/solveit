@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static co.edu.uco.solveit.publicacion.application.service.PublicacionService.PUBLICACION_NO_ENCONTRADA;
+
 @Service
 @RequiredArgsConstructor
 public class ReporteService implements ReporteUseCase {
@@ -27,7 +29,7 @@ public class ReporteService implements ReporteUseCase {
     public MessageResponse cancelarReporte(Long publicacionId) {
 
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         // Verificar que la publicación esté reportada
         if (publicacion.getEstado() != EstadoPublicacion.REPORTADA) {
@@ -56,7 +58,7 @@ public class ReporteService implements ReporteUseCase {
 
 
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         // Verificar que la publicación no esté ya publicada
         if (publicacion.getEstado() == EstadoPublicacion.PUBLICADA) {

@@ -18,11 +18,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static co.edu.uco.solveit.publicacion.application.service.PublicacionService.PUBLICACION_NO_ENCONTRADA;
+
 @Service
 @RequiredArgsConstructor
 public class SolicitudService implements SolicitudUseCase {
 
-    public static final String PUBLICACION_NO_ENCONTRADA = "Publicación no encontrada";
+    public static final String SOLICITUD_NO_ENCONTRADO = "Solicitud no encontrado";
+
     private final SolicitudRepositoryPort solicitudRepositoryPort;
     private final PublicacionRepositoryPort publicacionRepositoryPort;
     private final UsuarioApi usuarioApi;
@@ -120,7 +123,7 @@ public class SolicitudService implements SolicitudUseCase {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         Solicitud solicitud = solicitudRepositoryPort.findById(interesId)
-                .orElseThrow(() -> new PublicacionException("Interés no encontrado"));
+                .orElseThrow(() -> new PublicacionException(SOLICITUD_NO_ENCONTRADO));
 
         Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));

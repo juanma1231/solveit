@@ -19,6 +19,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UsuarioService {
 
+    public static final String USUARIO_NO_ENCONTRADO = "Usuario no encontrado";
+
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final CalificacionRepository calificacionRepository;
@@ -27,7 +29,7 @@ public class UsuarioService {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException(USUARIO_NO_ENCONTRADO));
 
         if (request.nombreCompleto() != null && !request.nombreCompleto().isEmpty()) {
             usuario.setNombreCompleto(request.nombreCompleto());

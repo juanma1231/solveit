@@ -46,9 +46,9 @@ class UsuarioAuthenticationAdapter implements UsuarioApi {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             return usuarioRepository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                    .orElseThrow(() -> new UsernameNotFoundException(USUARIO_NO_ENCONTRADO));
         } catch (UsernameNotFoundException e) {
-            throw new PublicacionException("Usuario no encontrado", e);
+            throw new PublicacionException(USUARIO_NO_ENCONTRADO, e);
         } catch (Exception e) {
             throw new PublicacionException("No se pudo obtener el usuario autenticado", e);
         }

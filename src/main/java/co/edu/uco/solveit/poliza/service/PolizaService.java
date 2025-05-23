@@ -24,6 +24,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 
+import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCONTRADO;
+
 
 @Slf4j
 @Service
@@ -38,7 +40,7 @@ public class PolizaService {
     public PolizaResponse registrarPoliza(RegistrarPolizaRequest request, MultipartFile archivo) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException(USUARIO_NO_ENCONTRADO));
 
         Poliza poliza = Poliza.builder()
                 .titular(usuario)
@@ -68,7 +70,7 @@ public class PolizaService {
     public PolizaResponse actualizarPoliza(Long id, ActualizarPolizaRequest request, MultipartFile archivo) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException(USUARIO_NO_ENCONTRADO));
 
         Poliza poliza = polizaRepository.findById(id)
                 .orElseThrow(() -> new PolizaException(POLIZA_NO_ENCONTRADA));
@@ -108,7 +110,7 @@ public class PolizaService {
     public List<PolizaResponse> obtenerPolizasUsuario(Long idUsuario) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuarioAutenticado = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException(USUARIO_NO_ENCONTRADO));
 
         if (!usuarioAutenticado.getId().equals(idUsuario) && 
             !usuarioAutenticado.getRole().name().equals(ADMIN)) {
@@ -135,7 +137,7 @@ public class PolizaService {
     public Resource descargarArchivoPoliza(Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException(USUARIO_NO_ENCONTRADO));
 
         Poliza poliza = polizaRepository.findById(id)
                 .orElseThrow(() -> new PolizaException(POLIZA_NO_ENCONTRADA));
@@ -172,7 +174,7 @@ public class PolizaService {
     public MessageResponse eliminarPoliza(Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException(USUARIO_NO_ENCONTRADO));
 
         Poliza poliza = polizaRepository.findById(id)
                 .orElseThrow(() -> new PolizaException(POLIZA_NO_ENCONTRADA));

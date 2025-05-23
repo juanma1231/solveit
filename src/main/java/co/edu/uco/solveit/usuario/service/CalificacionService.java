@@ -18,7 +18,7 @@ public class CalificacionService {
     private final UsuarioRepository usuarioRepository;
     public Double obtenerCalificacion(String email){
 
-        Long userId = usuarioRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Usuario no encontrado")).getId();
+        Long userId = usuarioRepository.findByEmail(email).orElseThrow(() -> new RuntimeException(USUARIO_NO_ENCONTRADO)).getId();
 
         List<Calificacion> calificaciones = calificacionRepository.findByUsuarioId(userId);
         return calificaciones.stream()

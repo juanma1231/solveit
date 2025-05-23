@@ -55,7 +55,7 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
     @Override
     public List<Reporte> findByUsuarioId(Long usuarioId) {
         Usuario usuario = usuarioApi.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException(USUARIO_NO_ENCONTRADO));
         return reporteRepository.findByUsuario(usuario).stream()
                 .map(ReporteMapper::toDomain)
                 .toList();

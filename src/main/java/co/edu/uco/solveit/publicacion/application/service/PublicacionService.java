@@ -24,13 +24,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static co.edu.uco.solveit.publicacion.application.service.SolicitudService.PUBLICACION_NO_ENCONTRADA;
-
-
 @Service
 @RequiredArgsConstructor
 public class PublicacionService implements PublicacionUseCase {
 
+    public static final String PUBLICACION_NO_ENCONTRADA = "Publicación no encontrada";
     private final PublicacionRepositoryPort publicacionRepositoryPort;
     private final ZonaRepositoryPort zonaRepositoryPort;
     private final ReporteRepositoryPort reporteRepositoryPort;
@@ -102,7 +100,7 @@ public class PublicacionService implements PublicacionUseCase {
     @Override
     public PublicacionResponse obtenerPublicacion(Long id) {
         Publicacion publicacion = publicacionRepositoryPort.findById(id)
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
         return mapToPublicacionResponse(publicacion);
     }
 
@@ -135,7 +133,7 @@ public class PublicacionService implements PublicacionUseCase {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(id)
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
             throw new PublicacionException("No tienes permiso para cancelar esta publicación");
@@ -168,7 +166,7 @@ public class PublicacionService implements PublicacionUseCase {
         String nombreUsuario = usuarioApi.getCurrentUserFullName();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(id)
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         // Verificar si el usuario ya ha reportado esta publicación
         if (reporteRepositoryPort.existsByPublicacionIdAndUsuarioId(publicacion.getId(), usuarioId)) {

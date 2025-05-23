@@ -71,7 +71,7 @@ public class AuthService {
         );
 
         var usuario = usuarioRepository.findByUsername(request.username())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException(USUARIO_NO_ENCONTRADO));
 
         usuario.setUltimoLogin(java.time.LocalDateTime.now());
         usuarioRepository.save(usuario);
