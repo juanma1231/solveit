@@ -59,6 +59,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UsuarioException.class)
+    public ResponseEntity<MessageResponse> handleUsuarioException(UsuarioException ex, WebRequest request) {
+        MessageResponse errorResponse = MessageResponse.builder()
+                .message(ex.getMessage())
+                .success(false)
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageResponse> handleGlobalException(Exception ex, WebRequest request) {
         MessageResponse errorResponse = MessageResponse.builder()

@@ -3,6 +3,7 @@ package co.edu.uco.solveit.usuario.service;
 import co.edu.uco.solveit.usuario.dto.*;
 import co.edu.uco.solveit.usuario.entity.Calificacion;
 import co.edu.uco.solveit.usuario.entity.Usuario;
+import co.edu.uco.solveit.usuario.exception.UsuarioException;
 import co.edu.uco.solveit.usuario.repository.CalificacionRepository;
 import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class UsuarioService {
 
             // Verificar contraseña actual
             if (!passwordEncoder.matches(request.currentPassword(), usuario.getPassword())) {
-                throw new RuntimeException("La contraseña actual es incorrecta");
+                throw new UsuarioException("La contraseña actual es incorrecta");
             }
 
             usuario.setPassword(passwordEncoder.encode(request.newPassword()));
@@ -90,11 +91,11 @@ public class UsuarioService {
     public MessageResponse resetPassword(ResetPasswordRequest request) {
 
         Usuario usuario = usuarioRepository.findByTokenRecuperacion(request.token())
-                .orElseThrow(() -> new RuntimeException("Token inválido o expirado"));
+                .orElseThrow(() -> new UsuarioException("Token inválido o expirado"));
 
         // Verificar que el token no haya expirado
         if (usuario.getExpiracionTokenRecuperacion().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("El token ha expirado");
+            throw new UsuarioException("El token ha expirado");
         }
 
         usuario.setPassword(passwordEncoder.encode(request.newPassword()));

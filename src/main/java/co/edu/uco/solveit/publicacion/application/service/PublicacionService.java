@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static co.edu.uco.solveit.publicacion.application.service.SolicitudService.PUBLICACION_NO_ENCONTRADA;
+
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +66,7 @@ public class PublicacionService implements PublicacionUseCase {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(id)
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
             throw new PublicacionException("No tienes permiso para actualizar esta publicación");

@@ -22,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SolicitudService implements SolicitudUseCase {
 
+    public static final String PUBLICACION_NO_ENCONTRADA = "Publicación no encontrada";
     private final SolicitudRepositoryPort solicitudRepositoryPort;
     private final PublicacionRepositoryPort publicacionRepositoryPort;
     private final UsuarioApi usuarioApi;
@@ -33,7 +34,7 @@ public class SolicitudService implements SolicitudUseCase {
         String nombreUsuario = usuarioApi.getCurrentUserFullName();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(request.publicacionId())
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         // Verificar que el usuario interesado no sea el propietario de la publicación,
         // porque no tiene sentido que se autointerese
@@ -77,7 +78,7 @@ public class SolicitudService implements SolicitudUseCase {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         // Verificar que sea el propietario de la publicación
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
@@ -122,7 +123,7 @@ public class SolicitudService implements SolicitudUseCase {
                 .orElseThrow(() -> new PublicacionException("Interés no encontrado"));
 
         Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         // Verificar que sea el propietario de la publicación
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
@@ -155,7 +156,7 @@ public class SolicitudService implements SolicitudUseCase {
                 .orElseThrow(() -> new PublicacionException("Interés no encontrado"));
 
         Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         // Verificar que sea el propietario de la publicación
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
@@ -195,7 +196,7 @@ public class SolicitudService implements SolicitudUseCase {
                 .orElseThrow(() -> new PublicacionException("Interés no encontrado"));
 
         Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
-                .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         // Verificar que sea el propietario de la publicación
         if (!publicacion.getUsuarioId().equals(usuarioId)) {

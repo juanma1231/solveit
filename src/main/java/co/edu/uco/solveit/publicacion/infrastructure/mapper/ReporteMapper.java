@@ -5,6 +5,8 @@ import co.edu.uco.solveit.publicacion.infrastructure.entity.ReporteEntity;
 
 public class ReporteMapper {
 
+    private ReporteMapper() {}
+
     public static Reporte toDomain(ReporteEntity entity) {
         if (entity == null) {
             return null;

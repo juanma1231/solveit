@@ -36,7 +36,9 @@ public class ChatController {
                          SimpMessageHeaderAccessor headerAccessor) {
 
 
-        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+        if (headerAccessor != null && headerAccessor.getSessionAttributes() != null) {
+            headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+        }
 
         if (chatMessage.getTimestamp() == null) {
             chatMessage.setTimestamp(LocalDateTime.now());

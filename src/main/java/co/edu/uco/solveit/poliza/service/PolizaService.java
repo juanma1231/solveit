@@ -19,11 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +30,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PolizaService {
 
+    public static final String ADMIN = "ADMIN";
+    public static final String POLIZA_NO_ENCONTRADA = "Póliza no encontrada";
     private final PolizaRepository polizaRepository;
     private final UsuarioRepository usuarioRepository;
 
@@ -72,7 +71,7 @@ public class PolizaService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         Poliza poliza = polizaRepository.findById(id)
-                .orElseThrow(() -> new PolizaException("Póliza no encontrada"));
+                .orElseThrow(() -> new PolizaException(POLIZA_NO_ENCONTRADA));
         if (!poliza.getTitular().getId().equals(usuario.getId())) {
             throw new PolizaException("No tienes permiso para actualizar esta póliza");
         }
@@ -101,7 +100,7 @@ public class PolizaService {
 
     public PolizaResponse obtenerPoliza(Long id) {
         Poliza poliza = polizaRepository.findById(id)
-                .orElseThrow(() -> new PolizaException("Póliza no encontrada"));
+                .orElseThrow(() -> new PolizaException(POLIZA_NO_ENCONTRADA));
 
         return mapToPolizaResponse(poliza);
     }
@@ -112,7 +111,7 @@ public class PolizaService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         if (!usuarioAutenticado.getId().equals(idUsuario) && 
-            !usuarioAutenticado.getRole().name().equals("ADMIN")) {
+            !usuarioAutenticado.getRole().name().equals(ADMIN)) {
             throw new PolizaException("No tienes permiso para ver las pólizas de este usuario");
         }
 
@@ -125,7 +124,7 @@ public class PolizaService {
     public List<PolizaResponse> obtenerMisPolizas() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException(POLIZA_NO_ENCONTRADA));
 
         List<Poliza> polizas = polizaRepository.findByTitular(usuario);
         return polizas.stream()
@@ -139,10 +138,10 @@ public class PolizaService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         Poliza poliza = polizaRepository.findById(id)
-                .orElseThrow(() -> new PolizaException("Póliza no encontrada"));
+                .orElseThrow(() -> new PolizaException(POLIZA_NO_ENCONTRADA));
 
         if (!poliza.getTitular().getId().equals(usuario.getId()) && 
-            !usuario.getRole().name().equals("ADMIN")) {
+            !usuario.getRole().name().equals(ADMIN)) {
             throw new PolizaException("No tienes permiso para descargar esta póliza");
         }
 
@@ -176,10 +175,10 @@ public class PolizaService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         Poliza poliza = polizaRepository.findById(id)
-                .orElseThrow(() -> new PolizaException("Póliza no encontrada"));
+                .orElseThrow(() -> new PolizaException(POLIZA_NO_ENCONTRADA));
 
         if (!poliza.getTitular().getId().equals(usuario.getId()) && 
-            !usuario.getRole().name().equals("ADMIN")) {
+            !usuario.getRole().name().equals(ADMIN)) {
             throw new PolizaException("No tienes permiso para eliminar esta póliza");
         }
 

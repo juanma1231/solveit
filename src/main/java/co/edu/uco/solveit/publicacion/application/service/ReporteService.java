@@ -25,7 +25,6 @@ public class ReporteService implements ReporteUseCase {
 
     @Override
     public MessageResponse cancelarReporte(Long publicacionId) {
-        Long usuarioId = usuarioApi.getCurrentUserId();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));
@@ -54,7 +53,7 @@ public class ReporteService implements ReporteUseCase {
 
     @Override
     public MessageResponse habilitarPublicacion(Long publicacionId) {
-        Long usuarioId = usuarioApi.getCurrentUserId();
+
 
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
                 .orElseThrow(() -> new PublicacionException("Publicación no encontrada"));

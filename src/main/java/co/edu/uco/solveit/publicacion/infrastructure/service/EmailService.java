@@ -16,12 +16,15 @@ public class EmailService {
      */
     public void enviarNotificacionNuevoInteres(String to, String publicacionTitulo, String usuarioInteresadoNombre) {
         String subject = "Nuevo interés en tu publicación: " + publicacionTitulo;
-        String body = String.format(
-                "Hola,\n\n" +
-                "El usuario %s ha mostrado interés en tu publicación \"%s\".\n\n" +
-                "Puedes revisar los detalles en la plataforma.\n\n" +
-                "Saludos,\n" +
-                "El equipo de SolveIT",
+        String body = String.format("""
+                Hola,
+
+                El usuario %s ha mostrado interés en tu publicación "%s".
+
+                Puedes revisar los detalles en la plataforma.
+
+                Saludos,
+                El equipo de SolveIT""",
                 usuarioInteresadoNombre, publicacionTitulo);
         
         enviarEmail(to, subject, body);
@@ -35,12 +38,15 @@ public class EmailService {
      */
     public void enviarNotificacionInteresRechazado(String to, String publicacionTitulo) {
         String subject = "Actualización sobre tu interés en: " + publicacionTitulo;
-        String body = String.format(
-                "Hola,\n\n" +
-                "Lamentamos informarte que tu interés en la publicación \"%s\" ha sido rechazado por el propietario.\n\n" +
-                "Te animamos a explorar otras publicaciones en la plataforma.\n\n" +
-                "Saludos,\n" +
-                "El equipo de SolveIT",
+        String body = String.format("""
+                Hola,
+
+                Lamentamos informarte que tu interés en la publicación "%s" ha sido rechazado por el propietario.
+
+                Te animamos a explorar otras publicaciones en la plataforma.
+
+                Saludos,
+                El equipo de SolveIT""",
                 publicacionTitulo);
         
         enviarEmail(to, subject, body);

@@ -6,6 +6,8 @@ import co.edu.uco.solveit.publicacion.infrastructure.entity.PublicacionEntity;
 
 public class PublicacionMapper {
 
+    private PublicacionMapper() {}
+
     public static Publicacion toDomain(PublicacionEntity entity) {
         if (entity == null) {
             return null;
