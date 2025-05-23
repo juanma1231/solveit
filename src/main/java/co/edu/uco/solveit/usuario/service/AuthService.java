@@ -15,6 +15,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCONTRADO;
 
 @Service
@@ -25,6 +28,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    Map<String, Object> extraClaims = new HashMap<>();
 
     public AuthResponse register(RegistroRequest request) {
 
@@ -48,9 +52,10 @@ public class AuthService {
                 .role(Role.USER)
                 .build();
 
-        usuarioRepository.save(usuario);
+        usuario = usuarioRepository.save(usuario);
+        extraClaims.put("id", usuario.getId());
 
-        var jwtToken = jwtService.generateToken(usuario);
+        var jwtToken = jwtService.generateToken(extraClaims, usuario);
 
         return AuthResponse.builder()
                 .token(jwtToken)
@@ -76,9 +81,12 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException(USUARIO_NO_ENCONTRADO));
 
         usuario.setUltimoLogin(java.time.LocalDateTime.now());
-        usuarioRepository.save(usuario);
+        usuario = usuarioRepository.save(usuario);
 
-        var jwtToken = jwtService.generateToken(usuario);
+        extraClaims.put("id", usuario.getId());
+
+        var jwtToken = jwtService.generateToken(extraClaims, usuario);
+
 
         return AuthResponse.builder()
                 .token(jwtToken)

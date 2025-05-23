@@ -2,7 +2,18 @@
 GET http://localhost:9595/api/v1/zonas
 
 ###
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwiaWF0IjoxNzQ3OTcyNDMwLCJleHAiOjE3NDgwNTg4MzB9.x9cWkHJs1o7gD_nC9m1_f8owJgeaKreClf6VRwbjeX4
 POST http://localhost:9595/api/v1/zonas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "corregimiento": "Santa Rosa",
+  "municipio": "Jamundí",
+  "ciudad": "Cali",
+  "departamento": "Valle del Cauca",
+  "pais": "Colombia"
+}
 
 ###
 GET http://localhost:9595/api/v1/zonas/{{id}}
