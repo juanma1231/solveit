@@ -28,7 +28,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    Map<String, Object> extraClaims = new HashMap<>();
 
     public AuthResponse register(RegistroRequest request) {
 
@@ -53,9 +52,8 @@ public class AuthService {
                 .build();
 
         usuario = usuarioRepository.save(usuario);
-        extraClaims.put("id", usuario.getId());
 
-        var jwtToken = jwtService.generateToken(extraClaims, usuario);
+        var jwtToken = jwtService.generateToken(usuario);
 
         return AuthResponse.builder()
                 .token(jwtToken)
@@ -83,9 +81,8 @@ public class AuthService {
         usuario.setUltimoLogin(java.time.LocalDateTime.now());
         usuario = usuarioRepository.save(usuario);
 
-        extraClaims.put("id", usuario.getId());
 
-        var jwtToken = jwtService.generateToken(extraClaims, usuario);
+        var jwtToken = jwtService.generateToken(usuario);
 
 
         return AuthResponse.builder()
