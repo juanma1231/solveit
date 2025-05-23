@@ -32,7 +32,7 @@ public class PublicacionMapper {
         if (domain == null) {
             return null;
         }
-        
+
         return PublicacionEntity.builder()
                 .id(domain.getId())
                 .titulo(domain.getTitulo())
@@ -40,6 +40,7 @@ public class PublicacionMapper {
                 .tipoPublicacion(mapTipoPublicacionToEntity(domain.getTipoPublicacion()))
                 .categoriaServicio(domain.getCategoriaServicio())
                 .estado(domain.getEstado())
+                .zona(ZonaMapper.toEntity(domain.getZona()))
                 .fechaCreacion(domain.getFechaCreacion())
                 .fechaActualizacion(domain.getFechaActualizacion())
                 .build();

@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.usuario.security;
 
+import co.edu.uco.solveit.usuario.entity.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -41,7 +42,10 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+        if (userDetails instanceof Usuario) {
+            extraClaims.put("UserId", ((Usuario) userDetails).getId());
+        }
+        return buildToken(extraClaims, userDetails,jwtExpiration);
     }
 
     private String buildToken(
