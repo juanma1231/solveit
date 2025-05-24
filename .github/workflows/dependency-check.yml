@@ -43,7 +43,7 @@ jobs:
         path: reports
 
     - name: GitHub Security Dashboard Report
-      uses: dependency-check/Dependency-Check_Action@v3
+      uses: dependency-check/Dependency-Check_Action@main
       with:
         project: 'SolveIt'
         path: '.'

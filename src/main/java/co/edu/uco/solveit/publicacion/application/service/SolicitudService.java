@@ -69,7 +69,7 @@ public class SolicitudService implements SolicitudUseCase {
         Usuario propietario = usuarioApi.findById(publicacion.getUsuarioId())
                 .orElseThrow(() -> new PublicacionException("Usuario propietario no encontrado"));
 
-        emailService.enviarNotificacionNuevoInteres(
+        emailService.enviarNotificacionNuevaSolicitud(
                 propietario.getEmail(),
                 publicacion.getTitulo(),
                 nombreUsuario
@@ -181,7 +181,7 @@ public class SolicitudService implements SolicitudUseCase {
                 .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
 
         // Enviar notificación por email al usuario interesado
-        emailService.enviarNotificacionInteresRechazado(
+        emailService.enviarNotificacionSolicitudRechazada(
                 usuarioInteresado.getEmail(),
                 publicacion.getTitulo()
         );
@@ -221,7 +221,7 @@ public class SolicitudService implements SolicitudUseCase {
                 .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
 
         // Enviar notificación por email al usuario interesado
-        emailService.enviarNotificacionInteresRechazado(
+        emailService.enviarNotificacionSolicitudRechazada(
                 usuarioInteresado.getEmail(),
                 publicacion.getTitulo()
         );
