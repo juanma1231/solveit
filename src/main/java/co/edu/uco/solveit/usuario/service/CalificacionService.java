@@ -18,11 +18,9 @@ import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCON
 public class CalificacionService {
     private final CalificacionRepository calificacionRepository;
     private final UsuarioRepository usuarioRepository;
-    public Double obtenerCalificacion(String email){
+    public Double obtenerCalificacion(Long usuarioId){
 
-        Long userId = usuarioRepository.findByEmail(email).orElseThrow(() -> new RuntimeException(USUARIO_NO_ENCONTRADO)).getId();
-
-        List<Calificacion> calificaciones = calificacionRepository.findByUsuarioId(userId);
+        List<Calificacion> calificaciones = calificacionRepository.findByUsuarioId(usuarioId);
         return calificaciones.stream()
                 .mapToDouble(Calificacion::getValor)
                 .average()

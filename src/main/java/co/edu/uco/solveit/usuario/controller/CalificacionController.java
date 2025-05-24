@@ -18,9 +18,10 @@ public class CalificacionController {
     private final CalificacionService calificacionService;
     @GetMapping
     public Double obtenerCalificacionPublicacion(
-            @RequestParam(required = true) String email) {
-        return  calificacionService.obtenerCalificacion(email);
+            @RequestParam(required = true) Long userId) {
+        return  calificacionService.obtenerCalificacion(userId);
     }
+
 
 
 }

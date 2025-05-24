@@ -6,3 +6,20 @@ POST http://localhost:9595/api/v1/usuarios/reset-password/confirmar
 
 ###
 POST http://localhost:9595/api/v1/usuarios/reset-password/solicitar
+
+
+### Calificar usuario
+@token = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjIsInN1YiI6ImpvaG5kb2U0IiwiaWF0IjoxNzQ4MTE0MjY3LCJleHAiOjE3NDgyMDA2Njd9.1ua94y2TJWvcUNNfdgT_x5eDDIsOw8vY5qXmXnpvwos
+
+POST http://localhost:9595/api/v1/usuarios/calificar
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": 1,
+  "calificacion": 5
+}
+
+###
+GET http://localhost:9595/api/v1/calificaciones?userId=2
+Authorization: Bearer {{token}}
