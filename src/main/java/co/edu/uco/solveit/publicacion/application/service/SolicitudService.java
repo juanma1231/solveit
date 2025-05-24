@@ -146,7 +146,7 @@ public class SolicitudService implements SolicitudUseCase {
         Usuario usuarioInteresado = usuarioApi.findById(solicitud.getUsuarioInteresadoId())
                 .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
 
-        emailServicePort.enviarNotificacionSolicitudRechazada(
+        emailServicePort.enviarNotificacionSolicitudAceptada(
                 usuarioInteresado.getEmail(),
                 publicacion.getTitulo()
         );
