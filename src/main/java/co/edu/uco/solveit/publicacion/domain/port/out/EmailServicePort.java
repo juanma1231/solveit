@@ -7,4 +7,5 @@ public interface EmailServicePort {
 
     void enviarNotificacionSolicitudRechazada(String to, String publicacionTitulo);
 
+    void enviarNotificacionSolicitudAceptada(String to, String publicacionTitulo);
 }

@@ -61,6 +61,25 @@ public class EmailServiceAdapter implements EmailServicePort {
         enviarEmail(to, subject, body);
     }
 
+
+    @Override
+    public void enviarNotificacionSolicitudAceptada(String to, String publicacionTitulo) {
+        String subject = "¡Buenas noticias sobre tu solicitud en: " + publicacionTitulo;
+        String body = String.format("""
+                        Hola,
+                        
+                        Nos complace informarte que tu solicitud en la publicación "%s" ha sido aceptada por el propietario.
+                        
+                        Puedes proceder a contactar al propietario para coordinar los siguientes pasos.
+                        
+                        Saludos,
+                        El equipo de SolveIT""",
+                publicacionTitulo);
+
+        enviarEmail(to, subject, body);
+    }
+
+
     void enviarEmail(String to, String subject, String body) {
 
         EmailServiceAdapter.log.info("Enviando email a: {}", to);

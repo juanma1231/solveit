@@ -143,8 +143,13 @@ public class SolicitudService implements SolicitudUseCase {
         solicitud.setEstado(EstadoInteres.ACEPTADO);
         solicitudRepositoryPort.save(solicitud);
 
-        // Aquí se activaría el chat, pero eso sería responsabilidad de otro módulo
-        // Por ahora, solo devolvemos un mensaje de éxito
+        Usuario usuarioInteresado = usuarioApi.findById(solicitud.getUsuarioInteresadoId())
+                .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
+
+        emailServicePort.enviarNotificacionSolicitudRechazada(
+                usuarioInteresado.getEmail(),
+                publicacion.getTitulo()
+        );
 
         return MessageResponse.builder()
                 .message("Interés aceptado correctamente. Se ha habilitado el chat con el usuario interesado.")
