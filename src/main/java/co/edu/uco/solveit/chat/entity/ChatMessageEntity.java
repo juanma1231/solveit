@@ -35,9 +35,6 @@ public class ChatMessageEntity {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    @Column(nullable = false)
-    private boolean delivered;
-
     @PrePersist
     protected void onCreate() {
         if (timestamp == null) {

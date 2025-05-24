@@ -8,15 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, Long> {
-    
-    /**
-     * Find all undelivered messages for a specific recipient
-     * @param recipient the username of the recipient
-     * @param delivered whether the messages have been delivered
-     * @return list of undelivered messages
-     */
-    List<ChatMessageEntity> findByRecipientAndDeliveredOrderByTimestampAsc(String recipient, boolean delivered);
-    
+
     /**
      * Find all messages between two users
      * @param userIdSender first user
@@ -25,4 +17,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, 
      */
     List<ChatMessageEntity> findBySenderAndRecipientOrSenderAndRecipientOrderByTimestampAsc(
             String sender1, String recipient1, String sender2, String recipient2);
+
+    List<ChatMessageEntity> findByRecipientOrderByTimestampAsc(String userId);
 }

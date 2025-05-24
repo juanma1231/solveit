@@ -65,7 +65,7 @@ public class ChatController {
                         .build()
         );
 
-        chatMessageService.deliverPendingMessages(chatMessage.getSender());
+        chatMessageService.deliverHistoricalMessages(chatMessage.getSender());
     }
 
     @GetMapping("/api/chat/history/{userIdSender}/{userIdRecipient}")

@@ -22,7 +22,6 @@ public class ChatMessageMapper {
                 .sender(chatMessage.getSender())
                 .recipient(chatMessage.getRecipient())
                 .timestamp(chatMessage.getTimestamp())
-                .delivered(false)
                 .build();
     }
 

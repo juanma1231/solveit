@@ -38,12 +38,7 @@ public class ReporteService implements ReporteUseCase {
         publicacion.setEstado(EstadoPublicacion.PUBLICADA);
         publicacionRepositoryPort.save(publicacion);
 
-        // Marcar todos los reportes de esta publicación como procesados
-        List<Reporte> reportes = reporteRepositoryPort.findByPublicacionId(publicacionId);
-        for (Reporte reporte : reportes) {
-            reporte.setProcesado(true);
-            reporteRepositoryPort.save(reporte);
-        }
+        marcarComoProcesadoLosReportesBy(publicacionId);
 
         return MessageResponse.builder()
                 .message("Reportes cancelados y publicación habilitada correctamente")
@@ -64,6 +59,8 @@ public class ReporteService implements ReporteUseCase {
 
         publicacion.setEstado(EstadoPublicacion.PUBLICADA);
         publicacionRepositoryPort.save(publicacion);
+
+        marcarComoProcesadoLosReportesBy(publicacionId);
 
         return MessageResponse.builder()
                 .message("Publicación habilitada correctamente")
@@ -112,17 +109,20 @@ public class ReporteService implements ReporteUseCase {
         publicacion.setEstado(EstadoPublicacion.BLOQUEADA);
         publicacionRepositoryPort.save(publicacion);
 
-        // Marcar todos los reportes de esta publicación como procesados
-        List<Reporte> reportes = reporteRepositoryPort.findByPublicacionId(publicacionId);
-        for (Reporte reporte : reportes) {
-            reporte.setProcesado(true);
-            reporteRepositoryPort.save(reporte);
-        }
+        marcarComoProcesadoLosReportesBy(publicacionId);
 
         return MessageResponse.builder()
                 .message("Publicación bloqueada permanentemente")
                 .success(true)
                 .build();
+    }
+
+    private void marcarComoProcesadoLosReportesBy(Long publicacionId) {
+        List<Reporte> reportes = reporteRepositoryPort.findByPublicacionId(publicacionId);
+        for (Reporte reporte : reportes) {
+            reporte.setProcesado(true);
+            reporteRepositoryPort.save(reporte);
+        }
     }
 
     private ReporteResponse mapToReporteResponse(Reporte reporte) {

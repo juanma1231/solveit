@@ -40,7 +40,6 @@ public class ChatMessageService {
         boolean recipientConnected = userStatusService.isConnected(chatMessage.getRecipient());
 
         if (recipientConnected) {
-            entity.setDelivered(true);
             messagingTemplate.convertAndSendToUser(
                     chatMessage.getRecipient(),
                     "/queue/messages",
@@ -53,30 +52,27 @@ public class ChatMessageService {
 
     /**
      * Deliver any undelivered messages to a user
-     * @param username the username of the user
+     * @param userId the userId of the user
      */
     @Transactional
-    public void deliverPendingMessages(String username) {
-        log.debug("Delivering pending messages to {}", username);
+    public void deliverHistoricalMessages(String userId) {
+        log.debug("Delivering pending messages to {}", userId);
 
-        List<ChatMessageEntity> undeliveredMessages = 
-                chatMessageRepository.findByRecipientAndDeliveredOrderByTimestampAsc(username, false);
+        List<ChatMessageEntity> historicalMessages =
+                chatMessageRepository.findByRecipientOrderByTimestampAsc(userId);
         
-        if (!undeliveredMessages.isEmpty()) {
-            log.debug("Found {} undelivered messages for {}", undeliveredMessages.size(), username);
+        if (!historicalMessages.isEmpty()) {
+            log.debug("Found {} historical messages for {}", historicalMessages.size(), userId);
 
-            List<ChatMessage> messages = chatMessageMapper.toModelList(undeliveredMessages);
+            List<ChatMessage> messages = chatMessageMapper.toModelList(historicalMessages);
 
             for (ChatMessage message : messages) {
                 messagingTemplate.convertAndSendToUser(
-                        username,
+                        userId,
                         "/queue/messages",
                         message
                 );
             }
-
-            undeliveredMessages.forEach(message -> message.setDelivered(true));
-            chatMessageRepository.saveAll(undeliveredMessages);
         }
     }
 
