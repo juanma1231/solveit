@@ -1,10 +1,10 @@
 ### POST creacion de publicaciones
 @tipoPublicacion1 = OFERTA
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwiaWF0IjoxNzQ3OTcyNDMwLCJleHAiOjE3NDgwNTg4MzB9.x9cWkHJs1o7gD_nC9m1_f8owJgeaKreClf6VRwbjeX4
+@token1 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjIsInN1YiI6ImpvaG5kb2U0IiwiaWF0IjoxNzQ4MTE0MjY3LCJleHAiOjE3NDgyMDA2Njd9.1ua94y2TJWvcUNNfdgT_x5eDDIsOw8vY5qXmXnpvwos
+@token2 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjEsInN1YiI6ImpvaG5kb2UzIiwiaWF0IjoxNzQ4MTE0MjI5LCJleHAiOjE3NDgyMDA2Mjl9.hx3tUC6ACizAwnX6aFTJSOywLOjkxQ1YIl-kcleqB7c
 POST http://localhost:9595/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion1}}
 Content-Type: application/json
-Authorization: Bearer {{token}}
-
+Authorization: Bearer {{token1}}
 
 {
   "titulo": "Titulo de ejemplo",
@@ -42,15 +42,21 @@ GET http://localhost:9595/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
+###
+POST http://localhost:9595/api/v1/publicaciones/{{id}}/reportar
+Content-Type: application/json
+Authorization: Bearer {{token2}}
 
 ###
 GET http://localhost:9595/api/v1/publicaciones/mis-publicaciones
-
+Content-Type: application/json
+Authorization: Bearer {{token1}}
 
 ###
-@id2 = variable value
-POST http://localhost:9595/api/v1/publicaciones/{{id2}}/reportar
+@idRepor = 3
+POST http://localhost:9595/api/v1/publicaciones/{{idRepor}}/reportar
 Content-Type: application/json
+Authorization: Bearer {{token1}}
 
 {
   "motivo": "Contenido inapropiado"

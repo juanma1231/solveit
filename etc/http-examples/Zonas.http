@@ -2,7 +2,7 @@
 GET http://localhost:9595/api/v1/zonas
 
 ###
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwiaWF0IjoxNzQ3OTcyNDMwLCJleHAiOjE3NDgwNTg4MzB9.x9cWkHJs1o7gD_nC9m1_f8owJgeaKreClf6VRwbjeX4
+@token = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjIsInN1YiI6ImpvaG5kb2U0IiwiaWF0IjoxNzQ4MTE0MjY3LCJleHAiOjE3NDgyMDA2Njd9.1ua94y2TJWvcUNNfdgT_x5eDDIsOw8vY5qXmXnpvwos
 POST http://localhost:9595/api/v1/zonas
 Authorization: Bearer {{token}}
 Content-Type: application/json
