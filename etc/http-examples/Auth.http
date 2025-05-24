@@ -2,9 +2,9 @@ POST http://localhost:9595/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "username": "johndoe",
+  "username": "johndoe2",
   "password": "SecurePass123!",
-  "email": "prueba2@email.com",
+  "email": "prueba3@email.com",
   "nombreCompleto": "John Doe",
   "lastName": "Doe"
 }
@@ -14,7 +14,7 @@ POST http://localhost:9595/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "username": "johndoe",
+  "username": "johndoe2",
   "password": "SecurePass123!"
 }
 

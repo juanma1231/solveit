@@ -39,6 +39,12 @@ class UsuarioAuthenticationAdapter implements UsuarioApi {
         return usuario.getNombreCompleto();
     }
 
+    public String getCurrentUserEmail() throws PublicacionException
+    {
+        Usuario usuario = getCurrentUser();
+        return usuario.getEmail();
+    }
+
     @Override
     public Optional<Usuario> findById(Long usuarioId) {
         return usuarioRepository.findById(usuarioId);

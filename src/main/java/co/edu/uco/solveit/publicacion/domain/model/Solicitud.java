@@ -13,6 +13,7 @@ public class Solicitud {
     private Long id;
     private Long publicacionId;
     private Publicacion publicacion;
+    private String userEmail;
     private Long usuarioInteresadoId;
     private String nombreUsuarioInteresado;
     private String titulo;

@@ -31,10 +31,12 @@ public class SolicitudService implements SolicitudUseCase {
     private final UsuarioApi usuarioApi;
     private final EmailService emailService;
 
+
     @Override
     public SolicitudResponse mostraSolicitud(CrearSolicitudRequest request) {
         Long usuarioId = usuarioApi.getCurrentUserId();
         String nombreUsuario = usuarioApi.getCurrentUserFullName();
+        String usuarioEmail = usuarioApi.getCurrentUserEmail();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(request.publicacionId())
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
@@ -56,6 +58,7 @@ public class SolicitudService implements SolicitudUseCase {
                 .usuarioInteresadoId(usuarioId)
                 .nombreUsuarioInteresado(nombreUsuario)
                 .titulo(request.titulo())
+                .userEmail(usuarioEmail)
                 .descripcion(request.descripcion())
                 .estado(EstadoInteres.PENDIENTE)
                 .build();
@@ -254,6 +257,7 @@ public class SolicitudService implements SolicitudUseCase {
                 .publicacionId(solicitud.getPublicacionId())
                 .tituloPublicacion(tituloPublicacion)
                 .usuarioInteresadoId(solicitud.getUsuarioInteresadoId())
+                .usuarioEmail(solicitud.getUserEmail())
                 .nombreUsuarioInteresado(solicitud.getNombreUsuarioInteresado())
                 .titulo(solicitud.getTitulo())
                 .descripcion(solicitud.getDescripcion())

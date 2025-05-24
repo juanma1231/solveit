@@ -81,7 +81,6 @@ public class AuthService {
         usuario.setUltimoLogin(java.time.LocalDateTime.now());
         usuario = usuarioRepository.save(usuario);
 
-
         var jwtToken = jwtService.generateToken(usuario);
 
 

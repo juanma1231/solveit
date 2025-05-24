@@ -15,12 +15,14 @@ Authorization: Bearer {{token}}
 }
 
 ###
+@id = 1
 PUT http://localhost:9595/api/v1/publicaciones/{{id}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "titulo": "Titulo de ejemplo",
-  "descripcion": "Descripción de la publicación",
+  "descripcion": "Descripción de la publicación3",
   "tipoPublicacion": "OFERTA",
   "categoriaServicio": "TECNOLOGIA",
   "zonaId": 1
@@ -30,10 +32,15 @@ Content-Type: application/json
 @id1 = variable value
 GET http://localhost:9595/api/v1/publicaciones/{{id1}}
 
+###
+GET http://localhost:9595/api/v1/publicaciones
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ###
-@tipoPublicacion2 = variable value
 GET http://localhost:9595/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion2}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 
 ###

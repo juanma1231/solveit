@@ -32,4 +32,6 @@ public interface UsuarioApi {
     String getCurrentUserFullName() throws PublicacionException;
 
     Optional<Usuario> findById(Long usuarioId);
+
+    String getCurrentUserEmail() throws PublicacionException;
 }

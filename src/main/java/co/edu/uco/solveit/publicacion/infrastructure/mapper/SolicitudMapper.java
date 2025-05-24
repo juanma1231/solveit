@@ -24,6 +24,7 @@ public class SolicitudMapper {
                 .descripcion(entity.getDescripcion())
                 .estado(entity.getEstado())
                 .fechaCreacion(entity.getFechaCreacion())
+                .userEmail(entity.getUserEmail())
                 .fechaActualizacion(entity.getFechaActualizacion())
                 .build();
     }
@@ -41,6 +42,7 @@ public class SolicitudMapper {
                 .estado(domain.getEstado())
                 .fechaCreacion(domain.getFechaCreacion())
                 .fechaActualizacion(domain.getFechaActualizacion())
+                .userEmail(domain.getUserEmail())
                 .build();
     }
 

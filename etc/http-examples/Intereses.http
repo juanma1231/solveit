@@ -1,19 +1,44 @@
 ###
-POST http://localhost:9595/api/v1/intereses
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lIiwiaWF0IjoxNzQ3OTcyNDMwLCJleHAiOjE3NDgwNTg4MzB9.x9cWkHJs1o7gD_nC9m1_f8owJgeaKreClf6VRwbjeX4
+POST http://localhost:9595/api/v1/solicitud
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "publicacionId": 3,
+  "titulo": "Solicitud para clases de matemáticas",
+  "descripcion": "Estoy interesado en recibir clases los fines de semana, preferiblemente en las mañanas."
+}
 
 ###
-GET http://localhost:9595/api/v1/intereses/mis-intereses
-
+GET http://localhost:9595/api/v1/solicitud/mis-solicitud
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ###
-GET http://localhost:9595/api/v1/intereses/mis-publicaciones
+GET http://localhost:9595/api/v1/solicitud/mis-publicaciones
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ###
 GET http://localhost:9595/api/v1/intereses/publicacionEntity/{{publicacionId}}
 
 
 ###
-POST http://localhost:9595/api/v1/intereses/{{interesId}}/aceptar
+@interesId = 2
+POST http://localhost:9595/api/v1/solicitud/{{interesId}}/aceptar
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ###
-POST http://localhost:9595/api/v1/intereses/{{interesId}}/rechazar
+@interesId2 = 3
+POST http://localhost:9595/api/v1/solicitud/{{interesId2}}/rechazar
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+###
+@solicitudId = 1
+POST http://localhost:9595/api/v1/solicitud/{{solicitudId}}/finalizar
+Content-Type: application/json
+Authorization: Bearer {{token}}
