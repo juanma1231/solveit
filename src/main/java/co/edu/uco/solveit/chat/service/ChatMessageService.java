@@ -78,17 +78,4 @@ public class ChatMessageService {
         }
     }
 
-    /**
-     * Get the chat history between two users
-     * @param userIdSender the first user
-     * @param userIdRecipient the second user
-     * @return the list of messages between the users
-     */
-    public List<ChatMessage> getChatHistory(String userIdSender, String userIdRecipient) {
-        List<ChatMessageEntity> entities = chatMessageRepository
-                .findBySenderAndRecipientOrSenderAndRecipientOrderByTimestampAsc(
-                        userIdSender, userIdRecipient, userIdRecipient, userIdSender);
-
-        return chatMessageMapper.toModelList(entities);
-    }
 }

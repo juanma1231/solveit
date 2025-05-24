@@ -11,12 +11,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -66,11 +62,5 @@ public class ChatController {
         );
 
         chatMessageService.deliverHistoricalMessages(chatMessage.getSender());
-    }
-
-    @GetMapping("/api/chat/history/{userIdSender}/{userIdRecipient}")
-    @ResponseBody
-    public List<ChatMessage> getChatHistory(@PathVariable String userIdSender, @PathVariable String userIdRecipient) {
-        return chatMessageService.getChatHistory(userIdSender, userIdRecipient);
     }
 }

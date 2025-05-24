@@ -42,8 +42,8 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
-        if (userDetails instanceof Usuario) {
-            extraClaims.put("UserId", ((Usuario) userDetails).getId());
+        if (userDetails instanceof Usuario usuario) {
+            extraClaims.put("UserId", usuario.getId());
         }
         return buildToken(extraClaims, userDetails,jwtExpiration);
     }

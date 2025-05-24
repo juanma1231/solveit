@@ -5,7 +5,6 @@ import co.edu.uco.solveit.chat.model.ChatMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class ChatMessageMapper {
@@ -48,6 +47,6 @@ public class ChatMessageMapper {
     public List<ChatMessage> toModelList(List<ChatMessageEntity> entities) {
         return entities.stream()
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
