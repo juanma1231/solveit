@@ -4,6 +4,7 @@ import co.edu.uco.solveit.publicacion.application.dto.CrearSolicitudRequest;
 import co.edu.uco.solveit.publicacion.application.dto.SolicitudResponse;
 import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
 import co.edu.uco.solveit.publicacion.domain.model.EstadoInteres;
+import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
 import co.edu.uco.solveit.publicacion.domain.model.Solicitud;
 import co.edu.uco.solveit.publicacion.domain.model.Publicacion;
 import co.edu.uco.solveit.publicacion.domain.port.in.SolicitudUseCase;
@@ -40,13 +41,15 @@ public class SolicitudService implements SolicitudUseCase {
         Publicacion publicacion = publicacionRepositoryPort.findById(request.publicacionId())
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
-        // Verificar que el usuario interesado no sea el propietario de la publicación,
-        // porque no tiene sentido que se autointerese
+
         if (publicacion.getUsuarioId().equals(usuarioId)) {
             throw new PublicacionException("No puedes mostrar interés en tu propia publicación");
         }
 
-        // Verificar que no haya expresado interés previamente
+        if(publicacion.getEstado() != EstadoPublicacion.PUBLICADA){
+            throw new PublicacionException("La publicación no está publicada");
+        }
+
         if (solicitudRepositoryPort.existsByPublicacionIdAndUsuarioInteresadoId(publicacion.getId(), usuarioId)) {
             throw new PublicacionException("Ya has mostrado interés en esta publicación");
         }
@@ -63,11 +66,9 @@ public class SolicitudService implements SolicitudUseCase {
 
         Solicitud interesGuardado = solicitudRepositoryPort.save(solicitud);
 
-        // Obtener el email del propietario de la publicación para enviar notificación
         Usuario propietario = usuarioApi.findById(publicacion.getUsuarioId())
                 .orElseThrow(() -> new PublicacionException("Usuario propietario no encontrado"));
 
-        // Enviar notificación por email al propietario
         emailService.enviarNotificacionNuevoInteres(
                 propietario.getEmail(),
                 publicacion.getTitulo(),
@@ -134,7 +135,6 @@ public class SolicitudService implements SolicitudUseCase {
             throw new PublicacionException("No tienes permiso para aceptar este interés");
         }
 
-        // Verificar que el interés esté pendiente
         if (solicitud.getEstado() != EstadoInteres.PENDIENTE) {
             throw new PublicacionException("Este interés ya ha sido procesado");
         }

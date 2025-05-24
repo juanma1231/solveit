@@ -2,6 +2,7 @@ package co.edu.uco.solveit.publicacion.infrastructure.adapter;
 
 import co.edu.uco.solveit.publicacion.domain.model.Zona;
 import co.edu.uco.solveit.publicacion.domain.port.out.ZonaRepositoryPort;
+import co.edu.uco.solveit.publicacion.infrastructure.entity.ZonaEntity;
 import co.edu.uco.solveit.publicacion.infrastructure.mapper.ZonaMapper;
 import co.edu.uco.solveit.publicacion.infrastructure.repository.ZonaRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class ZonaRepositoryAdapter implements ZonaRepositoryPort {
 
     @Override
     public Zona save(Zona zona) {
-        co.edu.uco.solveit.publicacion.infrastructure.entity.Zona zonaEntity = ZonaMapper.toEntity(zona);
-        co.edu.uco.solveit.publicacion.infrastructure.entity.Zona savedEntity = zonaRepository.save(zonaEntity);
+        ZonaEntity zonaEntity = ZonaMapper.toEntity(zona);
+        ZonaEntity savedEntity = zonaRepository.save(zonaEntity);
         return ZonaMapper.toDomain(savedEntity);
     }
 

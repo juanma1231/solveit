@@ -40,7 +40,7 @@ public class PublicacionEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zona_id", nullable = false)
-    private Zona zona;
+    private ZonaEntity zonaEntity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -1,12 +1,13 @@
 package co.edu.uco.solveit.publicacion.infrastructure.mapper;
 
 import co.edu.uco.solveit.publicacion.domain.model.Zona;
+import co.edu.uco.solveit.publicacion.infrastructure.entity.ZonaEntity;
 
 public class ZonaMapper {
 
     private ZonaMapper() {}
 
-    public static Zona toDomain(co.edu.uco.solveit.publicacion.infrastructure.entity.Zona entity) {
+    public static Zona toDomain(ZonaEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -20,11 +21,11 @@ public class ZonaMapper {
                 .build();
     }
 
-    public static co.edu.uco.solveit.publicacion.infrastructure.entity.Zona toEntity(Zona domain) {
+    public static ZonaEntity toEntity(Zona domain) {
         if (domain == null) {
             return null;
         }
-        return co.edu.uco.solveit.publicacion.infrastructure.entity.Zona.builder()
+        return ZonaEntity.builder()
                 .id(domain.getId())
                 .corregimiento(domain.getCorregimiento())
                 .municipio(domain.getMunicipio())

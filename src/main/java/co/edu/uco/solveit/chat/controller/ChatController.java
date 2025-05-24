@@ -2,39 +2,46 @@ package co.edu.uco.solveit.chat.controller;
 
 import co.edu.uco.solveit.chat.model.ChatMessage;
 import co.edu.uco.solveit.chat.model.MessageType;
+import co.edu.uco.solveit.chat.service.ChatMessageService;
+import co.edu.uco.solveit.chat.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final ChatMessageService chatMessageService;
+    private final UserStatusService userStatusService;
 
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(@Payload ChatMessage chatMessage) {
+        log.debug("Received message from {} to {}", chatMessage.getSender(), chatMessage.getRecipient());
 
         if (chatMessage.getTimestamp() == null) {
             chatMessage.setTimestamp(LocalDateTime.now());
         }
 
-        messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipient(),
-                "/queue/messages",
-                chatMessage
-        );
+        chatMessageService.processMessage(chatMessage);
     }
 
     @MessageMapping("/chat.register")
     public void register(@Payload ChatMessage chatMessage, 
                          SimpMessageHeaderAccessor headerAccessor) {
-
+        log.debug("User registered: {}", chatMessage.getSender());
 
         if (headerAccessor != null && headerAccessor.getSessionAttributes() != null) {
             headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
@@ -43,6 +50,8 @@ public class ChatController {
         if (chatMessage.getTimestamp() == null) {
             chatMessage.setTimestamp(LocalDateTime.now());
         }
+
+        userStatusService.connect(chatMessage.getSender());
 
         messagingTemplate.convertAndSendToUser(
                 chatMessage.getSender(),
@@ -55,5 +64,13 @@ public class ChatController {
                         .timestamp(LocalDateTime.now())
                         .build()
         );
+
+        chatMessageService.deliverPendingMessages(chatMessage.getSender());
+    }
+
+    @GetMapping("/api/chat/history/{user1}/{user2}")
+    @ResponseBody
+    public List<ChatMessage> getChatHistory(@PathVariable String user1, @PathVariable String user2) {
+        return chatMessageService.getChatHistory(user1, user2);
     }
 }

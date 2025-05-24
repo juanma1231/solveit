@@ -31,12 +31,10 @@ public class ReporteService implements ReporteUseCase {
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
-        // Verificar que la publicación esté reportada
         if (publicacion.getEstado() != EstadoPublicacion.REPORTADA) {
             throw new PublicacionException("La publicación no está reportada");
         }
 
-        // Cambiar el estado de la publicación a PUBLICADA
         publicacion.setEstado(EstadoPublicacion.PUBLICADA);
         publicacionRepositoryPort.save(publicacion);
 
@@ -60,12 +58,10 @@ public class ReporteService implements ReporteUseCase {
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
-        // Verificar que la publicación no esté ya publicada
         if (publicacion.getEstado() == EstadoPublicacion.PUBLICADA) {
             throw new PublicacionException("La publicación ya está habilitada");
         }
 
-        // Cambiar el estado de la publicación a PUBLICADA
         publicacion.setEstado(EstadoPublicacion.PUBLICADA);
         publicacionRepositoryPort.save(publicacion);
 

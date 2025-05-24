@@ -1,5 +1,7 @@
 package co.edu.uco.solveit.chat.event;
 
+import co.edu.uco.solveit.chat.service.ChatMessageService;
+import co.edu.uco.solveit.chat.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -16,6 +18,8 @@ import java.util.Objects;
 public class WebSocketEventListener {
 
     private final SimpMessageSendingOperations messagingTemplate;
+    private final UserStatusService userStatusService;
+    private final ChatMessageService chatMessageService;
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
@@ -25,10 +29,7 @@ public class WebSocketEventListener {
 
         if (username != null) {
             log.debug("User Disconnected : {}", username);
-
-            // In a one-to-one chat, we don't need to broadcast disconnect events
-            // If needed, this could be implemented by storing active chat partners
-            // and sending them notifications when a user disconnects
+            userStatusService.disconnect(username);
         }
     }
 }
