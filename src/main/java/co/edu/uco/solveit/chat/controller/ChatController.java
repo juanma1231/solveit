@@ -68,9 +68,9 @@ public class ChatController {
         chatMessageService.deliverPendingMessages(chatMessage.getSender());
     }
 
-    @GetMapping("/api/chat/history/{user1}/{user2}")
+    @GetMapping("/api/chat/history/{userIdSender}/{userIdRecipient}")
     @ResponseBody
-    public List<ChatMessage> getChatHistory(@PathVariable String user1, @PathVariable String user2) {
-        return chatMessageService.getChatHistory(user1, user2);
+    public List<ChatMessage> getChatHistory(@PathVariable String userIdSender, @PathVariable String userIdRecipient) {
+        return chatMessageService.getChatHistory(userIdSender, userIdRecipient);
     }
 }

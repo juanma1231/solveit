@@ -39,6 +39,16 @@ public class ReporteController {
     }
 
     /**
+     * Permanently blocks a publication, changing its state to BLOQUEADA
+     * @param publicacionId The publication ID
+     * @return A message response
+     */
+    @PostMapping("/publicacion/{publicacionId}/bloquear")
+    public MessageResponse bloquearPublicacion(@PathVariable Long publicacionId) {
+        return reporteUseCase.bloquearPublicacion(publicacionId);
+    }
+
+    /**
      * Lists all reports
      * @param procesado Optional filter for processed reports
      * @return The list of reports

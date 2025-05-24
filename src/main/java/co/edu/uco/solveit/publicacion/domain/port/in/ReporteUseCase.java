@@ -9,28 +9,35 @@ import java.util.List;
  * Interface for report management operations
  */
 public interface ReporteUseCase {
-    
+
     /**
      * Cancels a report on a publication, changing its state back to PUBLICADA
      * @param publicacionId The publication ID
      * @return A message response
      */
     MessageResponse cancelarReporte(Long publicacionId);
-    
+
     /**
      * Re-enables a publication to PUBLICADA state
      * @param publicacionId The publication ID
      * @return A message response
      */
     MessageResponse habilitarPublicacion(Long publicacionId);
-    
+
+    /**
+     * Permanently blocks a publication, changing its state to BLOQUEADA
+     * @param publicacionId The publication ID
+     * @return A message response
+     */
+    MessageResponse bloquearPublicacion(Long publicacionId);
+
     /**
      * Lists all reports
      * @param procesado Optional filter for processed reports
      * @return The list of reports
      */
     List<ReporteResponse> listarReportes(Boolean procesado);
-    
+
     /**
      * Gets a report by its ID
      * @param reporteId The report ID

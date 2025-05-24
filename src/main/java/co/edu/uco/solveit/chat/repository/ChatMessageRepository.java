@@ -19,8 +19,8 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, 
     
     /**
      * Find all messages between two users
-     * @param user1 first user
-     * @param user2 second user
+     * @param userIdSender first user
+     * @param userIdRecipient second user
      * @return list of messages between the users
      */
     List<ChatMessageEntity> findBySenderAndRecipientOrSenderAndRecipientOrderByTimestampAsc(

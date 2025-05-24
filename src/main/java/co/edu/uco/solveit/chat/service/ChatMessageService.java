@@ -34,25 +34,20 @@ public class ChatMessageService {
     @Transactional
     public void processMessage(ChatMessage chatMessage) {
         log.debug("Processing message from {} to {}", chatMessage.getSender(), chatMessage.getRecipient());
-        
-        // Save the message to the database
+
         ChatMessageEntity entity = chatMessageMapper.toEntity(chatMessage);
-        
-        // Check if recipient is connected
+
         boolean recipientConnected = userStatusService.isConnected(chatMessage.getRecipient());
-        
-        // If recipient is connected, mark as delivered
+
         if (recipientConnected) {
             entity.setDelivered(true);
-            // Send the message directly
             messagingTemplate.convertAndSendToUser(
                     chatMessage.getRecipient(),
                     "/queue/messages",
                     chatMessage
             );
         }
-        
-        // Save the message (delivered or not)
+
         chatMessageRepository.save(entity);
     }
 
@@ -63,18 +58,15 @@ public class ChatMessageService {
     @Transactional
     public void deliverPendingMessages(String username) {
         log.debug("Delivering pending messages to {}", username);
-        
-        // Find all undelivered messages for this user
+
         List<ChatMessageEntity> undeliveredMessages = 
                 chatMessageRepository.findByRecipientAndDeliveredOrderByTimestampAsc(username, false);
         
         if (!undeliveredMessages.isEmpty()) {
             log.debug("Found {} undelivered messages for {}", undeliveredMessages.size(), username);
-            
-            // Convert entities to models
+
             List<ChatMessage> messages = chatMessageMapper.toModelList(undeliveredMessages);
-            
-            // Send each message to the user
+
             for (ChatMessage message : messages) {
                 messagingTemplate.convertAndSendToUser(
                         username,
@@ -82,8 +74,7 @@ public class ChatMessageService {
                         message
                 );
             }
-            
-            // Mark all messages as delivered
+
             undeliveredMessages.forEach(message -> message.setDelivered(true));
             chatMessageRepository.saveAll(undeliveredMessages);
         }
@@ -91,14 +82,14 @@ public class ChatMessageService {
 
     /**
      * Get the chat history between two users
-     * @param user1 the first user
-     * @param user2 the second user
+     * @param userIdSender the first user
+     * @param userIdRecipient the second user
      * @return the list of messages between the users
      */
-    public List<ChatMessage> getChatHistory(String user1, String user2) {
+    public List<ChatMessage> getChatHistory(String userIdSender, String userIdRecipient) {
         List<ChatMessageEntity> entities = chatMessageRepository
                 .findBySenderAndRecipientOrSenderAndRecipientOrderByTimestampAsc(
-                        user1, user2, user2, user1);
+                        userIdSender, userIdRecipient, userIdRecipient, userIdSender);
         
         return chatMessageMapper.toModelList(entities);
     }

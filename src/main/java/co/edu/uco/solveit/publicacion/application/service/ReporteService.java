@@ -102,6 +102,29 @@ public class ReporteService implements ReporteUseCase {
         return mapToReporteResponse(reporte);
     }
 
+    @Override
+    public MessageResponse bloquearPublicacion(Long publicacionId) {
+        usuarioApi.getCurrentUserId(); // Verificar que el usuario esté autenticado
+
+        Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
+
+        publicacion.setEstado(EstadoPublicacion.BLOQUEADA);
+        publicacionRepositoryPort.save(publicacion);
+
+        // Marcar todos los reportes de esta publicación como procesados
+        List<Reporte> reportes = reporteRepositoryPort.findByPublicacionId(publicacionId);
+        for (Reporte reporte : reportes) {
+            reporte.setProcesado(true);
+            reporteRepositoryPort.save(reporte);
+        }
+
+        return MessageResponse.builder()
+                .message("Publicación bloqueada permanentemente")
+                .success(true)
+                .build();
+    }
+
     private ReporteResponse mapToReporteResponse(Reporte reporte) {
         String tituloPublicacion = "";
         if (reporte.getPublicacion() != null) {
