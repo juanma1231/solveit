@@ -51,16 +51,18 @@ public class ChatMessageService {
     }
 
     /**
-     * Deliver any undelivered messages to a user
+     * Deliver all historical messages to a user
+     * This includes messages where the user is either the sender or recipient
      * @param userId the userId of the user
      */
     @Transactional
     public void deliverHistoricalMessages(String userId) {
-        log.debug("Delivering pending messages to {}", userId);
+        log.debug("Delivering historical messages to {}", userId);
 
-        List<ChatMessageEntity> historicalMessages =
-                chatMessageRepository.findByRecipientOrderByTimestampAsc(userId);
-        
+        // Find all messages where the user is either the sender or recipient
+        List<ChatMessageEntity> historicalMessages = chatMessageRepository
+                .findAllMessagesInvolvingUser(userId);
+
         if (!historicalMessages.isEmpty()) {
             log.debug("Found {} historical messages for {}", historicalMessages.size(), userId);
 
@@ -86,7 +88,7 @@ public class ChatMessageService {
         List<ChatMessageEntity> entities = chatMessageRepository
                 .findBySenderAndRecipientOrSenderAndRecipientOrderByTimestampAsc(
                         userIdSender, userIdRecipient, userIdRecipient, userIdSender);
-        
+
         return chatMessageMapper.toModelList(entities);
     }
 }
