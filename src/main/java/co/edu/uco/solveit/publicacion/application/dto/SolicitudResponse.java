@@ -10,7 +10,6 @@ public record SolicitudResponse(
     Long id,
     Long publicacionId,
     String tituloPublicacion,
-    String usuarioEmail,
     Long usuarioInteresadoId,
     String nombreUsuarioInteresado,
     String titulo,

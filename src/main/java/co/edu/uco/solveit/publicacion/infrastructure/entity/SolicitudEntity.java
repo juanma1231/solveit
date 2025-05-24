@@ -34,9 +34,6 @@ public class SolicitudEntity {
     @Column(name = "titulo", nullable = false)
     private String titulo;
 
-    @Column(name = "user_email", nullable = false)
-    private String userEmail;
-
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
