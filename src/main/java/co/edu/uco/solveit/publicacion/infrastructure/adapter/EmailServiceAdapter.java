@@ -1,5 +1,6 @@
-package co.edu.uco.solveit.publicacion.infrastructure.service;
+package co.edu.uco.solveit.publicacion.infrastructure.adapter;
 
+import co.edu.uco.solveit.publicacion.domain.port.out.EmailServicePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EmailService {
+public class EmailServiceAdapter implements EmailServicePort {
 
     private final JavaMailSender javaMailSender;
 
@@ -20,6 +21,7 @@ public class EmailService {
      * @param publicacionTitulo Title of the publication
      * @param usuarioInteresadoNombre Name of the interested user
      */
+    @Override
     public void enviarNotificacionNuevaSolicitud(String to, String publicacionTitulo, String usuarioInteresadoNombre) {
         String subject = "Nueva Solicitud en tu publicación: " + publicacionTitulo;
         String body = String.format("""
@@ -42,6 +44,7 @@ public class EmailService {
      * @param to Email address of the recipient
      * @param publicacionTitulo Title of the publication
      */
+    @Override
     public void enviarNotificacionSolicitudRechazada(String to, String publicacionTitulo) {
         String subject = "Actualización sobre tu solicitud en: " + publicacionTitulo;
         String body = String.format("""
@@ -58,18 +61,11 @@ public class EmailService {
         enviarEmail(to, subject, body);
     }
 
-    /**
-     * Sends an email
-     * 
-     * @param to Email address of the recipient
-     * @param subject Subject of the email
-     * @param body Body of the email
-     */
-    private void enviarEmail(String to, String subject, String body) {
+    void enviarEmail(String to, String subject, String body) {
 
-        log.info("Enviando email a: {}", to);
-        log.info("Asunto: {}", subject);
-        log.info("Cuerpo: {}", body);
+        EmailServiceAdapter.log.info("Enviando email a: {}", to);
+        EmailServiceAdapter.log.info("Asunto: {}", subject);
+        EmailServiceAdapter.log.info("Cuerpo: {}", body);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("juanmagamexzuluaga@gmail.com");
@@ -79,9 +75,10 @@ public class EmailService {
 
         try {
             javaMailSender.send(message);
-            log.info("Email enviado correctamente");
+            EmailServiceAdapter.log.info("Email enviado correctamente");
         } catch (Exception e) {
-            log.error("Error al enviar el email: {}", e.getMessage(), e);
+            EmailServiceAdapter.log.error("Error al enviar el email: {}", e.getMessage(), e);
         }
     }
+
 }

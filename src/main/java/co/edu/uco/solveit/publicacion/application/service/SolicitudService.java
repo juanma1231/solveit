@@ -8,9 +8,9 @@ import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
 import co.edu.uco.solveit.publicacion.domain.model.Solicitud;
 import co.edu.uco.solveit.publicacion.domain.model.Publicacion;
 import co.edu.uco.solveit.publicacion.domain.port.in.SolicitudUseCase;
+import co.edu.uco.solveit.publicacion.domain.port.out.EmailServicePort;
 import co.edu.uco.solveit.publicacion.domain.port.out.SolicitudRepositoryPort;
 import co.edu.uco.solveit.publicacion.domain.port.out.PublicacionRepositoryPort;
-import co.edu.uco.solveit.publicacion.infrastructure.service.EmailService;
 import co.edu.uco.solveit.usuario.UsuarioApi;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
 import co.edu.uco.solveit.usuario.entity.Usuario;
@@ -29,8 +29,8 @@ public class SolicitudService implements SolicitudUseCase {
 
     private final SolicitudRepositoryPort solicitudRepositoryPort;
     private final PublicacionRepositoryPort publicacionRepositoryPort;
+    private final EmailServicePort emailServicePort;
     private final UsuarioApi usuarioApi;
-    private final EmailService emailService;
 
 
     @Override
@@ -69,7 +69,7 @@ public class SolicitudService implements SolicitudUseCase {
         Usuario propietario = usuarioApi.findById(publicacion.getUsuarioId())
                 .orElseThrow(() -> new PublicacionException("Usuario propietario no encontrado"));
 
-        emailService.enviarNotificacionNuevaSolicitud(
+        emailServicePort.enviarNotificacionNuevaSolicitud(
                 propietario.getEmail(),
                 publicacion.getTitulo(),
                 nombreUsuario
@@ -181,7 +181,7 @@ public class SolicitudService implements SolicitudUseCase {
                 .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
 
         // Enviar notificación por email al usuario interesado
-        emailService.enviarNotificacionSolicitudRechazada(
+        emailServicePort.enviarNotificacionSolicitudRechazada(
                 usuarioInteresado.getEmail(),
                 publicacion.getTitulo()
         );
@@ -221,7 +221,7 @@ public class SolicitudService implements SolicitudUseCase {
                 .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
 
         // Enviar notificación por email al usuario interesado
-        emailService.enviarNotificacionSolicitudRechazada(
+        emailServicePort.enviarNotificacionSolicitudRechazada(
                 usuarioInteresado.getEmail(),
                 publicacion.getTitulo()
         );
