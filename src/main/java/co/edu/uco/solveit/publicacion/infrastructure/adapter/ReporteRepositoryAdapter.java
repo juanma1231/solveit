@@ -28,14 +28,14 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
     public Reporte save(Reporte reporte) {
         ReporteEntity entity = ReporteMapper.toEntity(reporte);
 
-        var usuario = usuarioApi.findById(reporte.getUsuarioId());
+        usuarioApi.findById(reporte.getUsuarioId())
+                .ifPresent(entity::setUsuario);
 
-        if(usuario.isPresent()){
-            entity.setUsuario(usuario.get());
-            entity.getPublicacion().setUsuario(usuario.get());
+        if (reporte.getPublicacionId() != null) {
+
+            entity.setPublicacion(PublicacionMapper.toEntity(reporte.getPublicacion()));
         }
 
-        entity.setPublicacion(PublicacionMapper.toEntity(reporte.getPublicacion()));
 
         ReporteEntity savedEntity = reporteRepository.save(entity);
         return ReporteMapper.toDomain(savedEntity);
