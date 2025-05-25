@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
-                .allowedOriginPatterns("http://localhost:8081")
+                .allowedOriginPatterns("http://localhost:8081,https://solveit--u61lphwrdd.expo.app/","https://solveit.expo.app")
                 .maxAge(3600);
     }
 }
