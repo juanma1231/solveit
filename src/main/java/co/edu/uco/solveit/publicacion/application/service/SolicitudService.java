@@ -26,6 +26,7 @@ import static co.edu.uco.solveit.publicacion.application.service.PublicacionServ
 public class SolicitudService implements SolicitudUseCase {
 
     public static final String SOLICITUD_NO_ENCONTRADO = "Solicitud no encontrado";
+    public static final String USUARIO_INTERESADO_NO_ENCONTRADO = "Usuario interesado no encontrado";
 
     private final SolicitudRepositoryPort solicitudRepositoryPort;
     private final PublicacionRepositoryPort publicacionRepositoryPort;
@@ -144,7 +145,7 @@ public class SolicitudService implements SolicitudUseCase {
         solicitudRepositoryPort.save(solicitud);
 
         Usuario usuarioInteresado = usuarioApi.findById(solicitud.getUsuarioInteresadoId())
-                .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
+                .orElseThrow(() -> new PublicacionException(USUARIO_INTERESADO_NO_ENCONTRADO));
 
         emailServicePort.enviarNotificacionSolicitudAceptada(
                 usuarioInteresado.getEmail(),
@@ -183,7 +184,7 @@ public class SolicitudService implements SolicitudUseCase {
 
         // Obtener el email del usuario interesado para enviar notificación
         Usuario usuarioInteresado = usuarioApi.findById(solicitud.getUsuarioInteresadoId())
-                .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
+                .orElseThrow(() -> new PublicacionException(USUARIO_INTERESADO_NO_ENCONTRADO));
 
         // Enviar notificación por email al usuario interesado
         emailServicePort.enviarNotificacionSolicitudRechazada(
@@ -223,7 +224,7 @@ public class SolicitudService implements SolicitudUseCase {
 
         // Obtener el email del usuario interesado para enviar notificación
         Usuario usuarioInteresado = usuarioApi.findById(solicitud.getUsuarioInteresadoId())
-                .orElseThrow(() -> new PublicacionException("Usuario interesado no encontrado"));
+                .orElseThrow(() -> new PublicacionException(USUARIO_INTERESADO_NO_ENCONTRADO));
 
         // Enviar notificación por email al usuario interesado
         emailServicePort.enviarNotificacionSolicitudRechazada(

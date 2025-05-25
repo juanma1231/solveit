@@ -81,9 +81,6 @@ public class UsuarioService {
 
         usuarioRepository.save(usuario);
 
-        // Aquí se enviaría un email con el token de recuperación
-        // emailService.enviarEmailRecuperacion(usuario.getEmail(), token);
-
         return MessageResponse.builder()
                 .message("Se ha enviado un correo con instrucciones para restablecer tu contraseña")
                 .success(true)

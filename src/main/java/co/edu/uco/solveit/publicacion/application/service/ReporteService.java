@@ -104,7 +104,7 @@ public class ReporteService implements ReporteUseCase {
 
     @Override
     public ReporteResponse obtenerReportePorId(Long reporteId) {
-        usuarioApi.getCurrentUserId(); // Verificar que el usuario esté autenticado
+        usuarioApi.getCurrentUserId();
 
         Reporte reporte = reporteRepositoryPort.findById(reporteId)
                 .orElseThrow(() -> new PublicacionException("Reporte no encontrado"));
@@ -114,7 +114,7 @@ public class ReporteService implements ReporteUseCase {
 
     @Override
     public MessageResponse bloquearPublicacion(Long publicacionId) {
-        usuarioApi.getCurrentUserId(); // Verificar que el usuario esté autenticado
+        usuarioApi.getCurrentUserId();
 
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));

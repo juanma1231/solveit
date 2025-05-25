@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SolicitudRepositoryPort {
-    Solicitud save(Solicitud Solicitud);
+    Solicitud save(Solicitud solicitud);
     Optional<Solicitud> findById(Long id);
     List<Solicitud> findByPublicacionId(Long publicacionId);
     List<Solicitud> findByPublicacionIdAndEstado(Long publicacionId, EstadoInteres estado);

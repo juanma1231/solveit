@@ -75,7 +75,6 @@ public class PublicacionService implements PublicacionUseCase {
             throw new PublicacionException("No se puede actualizar una publicación cancelada o bloqueada");
         }
 
-        // Verificar si existen intereses pendientes o aceptados para esta publicación
         List<EstadoInteres> estadosVigentes = List.of(EstadoInteres.PENDIENTE, EstadoInteres.ACEPTADO);
         List<Solicitud> interesesVigentes = solicitudRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
 
