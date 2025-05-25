@@ -13,6 +13,7 @@ import co.edu.uco.solveit.usuario.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static co.edu.uco.solveit.publicacion.application.service.PublicacionService.PUBLICACION_NO_ENCONTRADA;
@@ -79,7 +80,7 @@ public class ReporteService implements ReporteUseCase {
             // Como no hay findAll, usamos findByProcesado con ambos valores
             List<Reporte> reportesProcesados = reporteRepositoryPort.findByProcesado(true);
             List<Reporte> reportesNoProcesados = reporteRepositoryPort.findByProcesado(false);
-            reportes = new java.util.ArrayList<>();
+            reportes = new ArrayList<>();
             reportes.addAll(reportesProcesados);
             reportes.addAll(reportesNoProcesados);
         }
