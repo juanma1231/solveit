@@ -53,7 +53,7 @@ Content-Type: application/json
 Authorization: Bearer {{token1}}
 
 ###
-@idRepor = 3
+@idRepor = 5
 POST http://localhost:9595/api/v1/publicaciones/{{idRepor}}/reportar
 Content-Type: application/json
 Authorization: Bearer {{token1}}
