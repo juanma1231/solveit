@@ -1,8 +1,8 @@
 ### POST creacion de publicaciones
 @tipoPublicacion1 = OFERTA
-@token1 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjIsInN1YiI6ImpvaG5kb2U0IiwiaWF0IjoxNzQ4MTE0MjY3LCJleHAiOjE3NDgyMDA2Njd9.1ua94y2TJWvcUNNfdgT_x5eDDIsOw8vY5qXmXnpvwos
+@token1 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjIsInN1YiI6ImpvaG5kb2U0IiwiaWF0IjoxNzQ4MTkxOTk5LCJleHAiOjE3NDgyNzgzOTl9.B2V8yJ_7o4aonSbJwzBB55j3xq3xAoDqKRTbh4DGDsQ
 @token2 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjEsInN1YiI6ImpvaG5kb2UzIiwiaWF0IjoxNzQ4MTE0MjI5LCJleHAiOjE3NDgyMDA2Mjl9.hx3tUC6ACizAwnX6aFTJSOywLOjkxQ1YIl-kcleqB7c
-POST http://localhost:9595/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion1}}
+POST https://solveit-app-bmbgbxcheedfanbd.eastus2-01.azurewebsites.net/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion1}}
 Content-Type: application/json
 Authorization: Bearer {{token1}}
 
