@@ -84,6 +84,18 @@ public class ReporteService implements ReporteUseCase {
             reportes.addAll(reportesNoProcesados);
         }
 
+        // Filtrar solo los reportes de publicaciones en estado REPORTADO
+        reportes = reportes.stream()
+                .filter(reporte -> {
+                    if (reporte.getPublicacionId() != null) {
+                        return publicacionRepositoryPort.findById(reporte.getPublicacionId())
+                                .map(publicacion -> publicacion.getEstado() == EstadoPublicacion.REPORTADA)
+                                .orElse(false);
+                    }
+                    return false;
+                })
+                .toList();
+
         return reportes.stream()
                 .map(this::mapToReporteResponse)
                 .toList();
