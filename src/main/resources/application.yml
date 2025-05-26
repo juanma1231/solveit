@@ -14,6 +14,8 @@ spring:
       maximum-pool-size: 10
       connection-timeout: 30000
 
+  mail: jnqo oafz cjjj grlp
+
   jpa:
     hibernate:
       ddl-auto: update

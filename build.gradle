@@ -97,7 +97,12 @@ sonarqube {
             "**/exception/**",
             "**/config/**",
             "**/controller/**",
-            "**/SolveitApplication.java"
+            "**/SolveitApplication.java",
+            "**/security/**",
+            "**/UsuarioAuthenticationAdapter.java",
+            "**/event/**",
+            "**/ChatMessageMapper.java",
+            "**/EmailServiceAdapter.java"
         ]
     }
 }

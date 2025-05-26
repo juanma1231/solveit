@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.publicacion.infrastructure.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,6 +10,8 @@ import java.util.Properties;
 
 @Configuration
 public class MailConfig {
+    @Value("${spring.mail}")
+    String token;
 
     @Bean
     public JavaMailSender javaMailSender() {
@@ -18,7 +21,7 @@ public class MailConfig {
         mailSender.setPort(587);
 
         mailSender.setUsername("itsolve3@gmail.com");
-        mailSender.setPassword("jnqo oafz cjjj grlp");
+        mailSender.setPassword(token);
         
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

@@ -13,20 +13,25 @@ import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -86,6 +91,10 @@ class PolizaServiceTest {
         poliza.setFechaEmision(LocalDate.now().minusDays(10));
         poliza.setFechaVencimiento(LocalDate.now().plusYears(1));
         poliza.setTipoPoliza("Vida");
+        poliza.setNombreArchivo("test.pdf");
+        poliza.setTipoArchivo("application/pdf");
+        poliza.setArchivoData("test content".getBytes(StandardCharsets.UTF_8));
+        poliza.setRutaArchivo(UUID.randomUUID().toString());
 
         registrarPolizaRequest = new RegistrarPolizaRequest(
                 "POL-123",
@@ -306,5 +315,140 @@ class PolizaServiceTest {
         // Act & Assert
         assertThrows(PolizaException.class, () -> polizaService.eliminarPoliza(1L));
         verify(polizaRepository, never()).delete(any(Poliza.class));
+    }
+
+    @Test
+    void descargarArchivoPoliza_CuandoEsTitular_DeberiaDescargarArchivo(@TempDir Path tempDir) throws IOException {
+        // Arrange
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
+        when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(poliza));
+
+        // Act
+        Resource resource = polizaService.descargarArchivoPoliza(1L);
+
+        // Assert
+        assertNotNull(resource);
+        assertTrue(resource.exists());
+        assertEquals("test content", new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void descargarArchivoPoliza_CuandoEsAdmin_DeberiaDescargarArchivo(@TempDir Path tempDir) throws IOException {
+        // Arrange
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(adminUsuario));
+        when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(poliza));
+
+        // Act
+        Resource resource = polizaService.descargarArchivoPoliza(1L);
+
+        // Assert
+        assertNotNull(resource);
+        assertTrue(resource.exists());
+        assertEquals("test content", new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void descargarArchivoPoliza_CuandoNoEsTitularNiAdmin_DeberiaLanzarExcepcion() {
+        // Arrange
+        Usuario otroUsuario = new Usuario();
+        otroUsuario.setId(3L);
+        otroUsuario.setUsername("otroUsuario");
+        otroUsuario.setRole(Role.USER);
+
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(otroUsuario));
+        when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(poliza));
+
+        // Act & Assert
+        assertThrows(PolizaException.class, () -> polizaService.descargarArchivoPoliza(1L));
+    }
+
+    @Test
+    void descargarArchivoPoliza_CuandoPolizaNoTieneArchivo_DeberiaLanzarExcepcion() {
+        // Arrange
+        Poliza polizaSinArchivo = new Poliza();
+        polizaSinArchivo.setId(2L);
+        polizaSinArchivo.setTitular(usuario);
+        polizaSinArchivo.setNumeroPoliza("POL-456");
+        // No file data set
+
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
+        when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(polizaSinArchivo));
+
+        // Act & Assert
+        assertThrows(PolizaException.class, () -> polizaService.descargarArchivoPoliza(2L));
+    }
+
+    @Test
+    void registrarPoliza_CuandoArchivoEsNulo_NoDeberiaEstablecerDatosArchivo() {
+        // Arrange
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
+        when(polizaRepository.save(any(Poliza.class))).thenReturn(poliza);
+
+        // Act
+        PolizaResponse response = polizaService.registrarPoliza(registrarPolizaRequest, null);
+
+        // Assert
+        assertNotNull(response);
+        verify(polizaRepository).save(argThat(p -> 
+            p.getNombreArchivo() == null && 
+            p.getTipoArchivo() == null && 
+            p.getArchivoData() == null && 
+            p.getRutaArchivo() == null
+        ));
+    }
+
+    @Test
+    void registrarPoliza_CuandoArchivoEsVacio_NoDeberiaEstablecerDatosArchivo() {
+        // Arrange
+        MockMultipartFile emptyFile = new MockMultipartFile(
+            "file", "", "application/pdf", new byte[0]
+        );
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
+        when(polizaRepository.save(any(Poliza.class))).thenReturn(poliza);
+
+        // Act
+        PolizaResponse response = polizaService.registrarPoliza(registrarPolizaRequest, emptyFile);
+
+        // Assert
+        assertNotNull(response);
+        verify(polizaRepository).save(argThat(p -> 
+            p.getNombreArchivo() == null && 
+            p.getTipoArchivo() == null && 
+            p.getArchivoData() == null && 
+            p.getRutaArchivo() == null
+        ));
+    }
+
+    @Test
+    void registrarPoliza_CuandoHayErrorAlLeerArchivo_DeberiaLanzarExcepcion() throws IOException {
+        // Arrange
+        MultipartFile mockErrorFile = mock(MultipartFile.class);
+        when(mockErrorFile.isEmpty()).thenReturn(false);
+        when(mockErrorFile.getOriginalFilename()).thenReturn("test.pdf");
+        when(mockErrorFile.getContentType()).thenReturn("application/pdf");
+        when(mockErrorFile.getBytes()).thenThrow(new IOException("Error al leer archivo"));
+
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
+
+        // Act & Assert
+        assertThrows(PolizaException.class, () -> polizaService.registrarPoliza(registrarPolizaRequest, mockErrorFile));
+        verify(polizaRepository, never()).save(any(Poliza.class));
+    }
+
+    @Test
+    void actualizarPoliza_CuandoHayErrorAlLeerArchivo_DeberiaLanzarExcepcion() throws IOException {
+        // Arrange
+        MultipartFile mockErrorFile = mock(MultipartFile.class);
+        when(mockErrorFile.isEmpty()).thenReturn(false);
+        when(mockErrorFile.getOriginalFilename()).thenReturn("test.pdf");
+        when(mockErrorFile.getContentType()).thenReturn("application/pdf");
+        when(mockErrorFile.getBytes()).thenThrow(new IOException("Error al leer archivo"));
+
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
+        when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(poliza));
+
+        // Act & Assert
+        assertThrows(PolizaException.class, () -> polizaService.actualizarPoliza(1L, actualizarPolizaRequest, mockErrorFile));
+        verify(polizaRepository, never()).save(any(Poliza.class));
     }
 }
