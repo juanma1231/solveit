@@ -71,13 +71,13 @@ public class ReporteService implements ReporteUseCase {
 
     @Override
     public List<ReporteResponse> listarReportes(Boolean procesado) {
-        usuarioApi.getCurrentUserId(); // Verificar que el usuario esté autenticado
+        usuarioApi.getCurrentUserId();
 
         List<Reporte> reportes;
         if (procesado != null) {
             reportes = reporteRepositoryPort.findByProcesado(procesado);
         } else {
-            // Como no hay findAll, usamos findByProcesado con ambos valores
+
             List<Reporte> reportesProcesados = reporteRepositoryPort.findByProcesado(true);
             List<Reporte> reportesNoProcesados = reporteRepositoryPort.findByProcesado(false);
             reportes = new ArrayList<>();
@@ -85,7 +85,7 @@ public class ReporteService implements ReporteUseCase {
             reportes.addAll(reportesNoProcesados);
         }
 
-        // Filtrar solo los reportes de publicaciones en estado REPORTADO
+
         reportes = reportes.stream()
                 .filter(reporte -> {
                     if (reporte.getPublicacionId() != null) {

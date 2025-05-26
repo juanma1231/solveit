@@ -86,7 +86,7 @@ public class SolicitudService implements SolicitudUseCase {
         Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
-        // Verificar que sea el propietario de la publicación
+
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
             throw new PublicacionException("No tienes permiso para ver los intereses de esta publicación");
         }
@@ -101,10 +101,9 @@ public class SolicitudService implements SolicitudUseCase {
     public List<SolicitudResponse> listarSolicitudEnMisPublicaciones() {
         Long usuarioId = usuarioApi.getCurrentUserId();
 
-        // Obtener todas las publicaciones del usuario
+
         List<Publicacion> publicaciones = publicacionRepositoryPort.findByUsuarioId(usuarioId);
 
-        // Obtener todos los intereses para esas publicaciones
         return publicaciones.stream()
                 .flatMap(publicacion -> solicitudRepositoryPort.findByPublicacionId(publicacion.getId()).stream())
                 .map(this::mapToInteresResponse)
@@ -131,7 +130,7 @@ public class SolicitudService implements SolicitudUseCase {
         Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
-        // Verificar que sea el propietario de la publicación
+
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
             throw new PublicacionException("No tienes permiso para aceptar este interés");
         }
@@ -140,7 +139,7 @@ public class SolicitudService implements SolicitudUseCase {
             throw new PublicacionException("Este interés ya ha sido procesado");
         }
 
-        // Actualizar el estado del interés
+
         solicitud.setEstado(EstadoInteres.ACEPTADO);
         solicitudRepositoryPort.save(solicitud);
 
@@ -168,25 +167,23 @@ public class SolicitudService implements SolicitudUseCase {
         Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
-        // Verificar que sea el propietario de la publicación
+
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
             throw new PublicacionException("No tienes permiso para rechazar este interés");
         }
 
-        // Verificar que el interés esté pendiente
+
         if (solicitud.getEstado() != EstadoInteres.PENDIENTE) {
             throw new PublicacionException("Este interés ya ha sido procesado");
         }
 
-        // Actualizar el estado del interés
+
         solicitud.setEstado(EstadoInteres.RECHAZADO);
         solicitudRepositoryPort.save(solicitud);
 
-        // Obtener el email del usuario interesado para enviar notificación
         Usuario usuarioInteresado = usuarioApi.findById(solicitud.getUsuarioInteresadoId())
                 .orElseThrow(() -> new PublicacionException(USUARIO_INTERESADO_NO_ENCONTRADO));
 
-        // Enviar notificación por email al usuario interesado
         emailServicePort.enviarNotificacionSolicitudRechazada(
                 usuarioInteresado.getEmail(),
                 publicacion.getTitulo()
@@ -208,25 +205,24 @@ public class SolicitudService implements SolicitudUseCase {
         Publicacion publicacion = publicacionRepositoryPort.findById(solicitud.getPublicacionId())
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
-        // Verificar que sea el propietario de la publicación
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
             throw new PublicacionException("No tienes permiso para finalizar este interés");
         }
 
-        // Verificar que el interés esté aceptado
+
         if (solicitud.getEstado() != EstadoInteres.ACEPTADO) {
             throw new PublicacionException("Solo se pueden finalizar intereses que estén en estado aceptado");
         }
 
-        // Actualizar el estado del interés
+
         solicitud.setEstado(EstadoInteres.COMPLETADO);
         solicitudRepositoryPort.save(solicitud);
 
-        // Obtener el email del usuario interesado para enviar notificación
+
         Usuario usuarioInteresado = usuarioApi.findById(solicitud.getUsuarioInteresadoId())
                 .orElseThrow(() -> new PublicacionException(USUARIO_INTERESADO_NO_ENCONTRADO));
 
-        // Enviar notificación por email al usuario interesado
+
         emailServicePort.enviarNotificacionSolicitudRechazada(
                 usuarioInteresado.getEmail(),
                 publicacion.getTitulo()
