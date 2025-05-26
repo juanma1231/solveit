@@ -13,7 +13,6 @@ import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,7 +25,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -318,7 +316,7 @@ class PolizaServiceTest {
     }
 
     @Test
-    void descargarArchivoPoliza_CuandoEsTitular_DeberiaDescargarArchivo(@TempDir Path tempDir) throws IOException {
+    void descargarArchivoPoliza_CuandoEsTitular_DeberiaDescargarArchivo() throws IOException {
         // Arrange
         when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
         when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(poliza));
@@ -333,7 +331,7 @@ class PolizaServiceTest {
     }
 
     @Test
-    void descargarArchivoPoliza_CuandoEsAdmin_DeberiaDescargarArchivo(@TempDir Path tempDir) throws IOException {
+    void descargarArchivoPoliza_CuandoEsAdmin_DeberiaDescargarArchivo() throws IOException {
         // Arrange
         when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(adminUsuario));
         when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(poliza));

@@ -1,10 +1,7 @@
 package co.edu.uco.solveit.publicacion.infrastructure.mapper;
-
-import co.edu.uco.solveit.publicacion.domain.model.Publicacion;
 import co.edu.uco.solveit.publicacion.domain.model.Reporte;
 import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
 import co.edu.uco.solveit.publicacion.domain.model.TipoPublicacion;
-import co.edu.uco.solveit.publicacion.domain.model.Zona;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.PublicacionEntity;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.ReporteEntity;
 import co.edu.uco.solveit.publicacion.infrastructure.entity.ZonaEntity;
