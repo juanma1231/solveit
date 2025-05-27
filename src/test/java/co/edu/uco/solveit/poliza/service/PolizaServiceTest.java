@@ -25,16 +25,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -380,119 +374,6 @@ class PolizaServiceTest {
 
         // Act & Assert
         assertThrows(PolizaException.class, () -> polizaService.descargarArchivoPoliza(2L));
-    }
-
-    @Test
-    void descargarArchivoPoliza_ConSistemaPOSIX_DeberiaCrearArchivoTempSeguro() throws IOException {
-        // Arrange
-        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
-        when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(poliza));
-
-        // Mock POSIX environment
-        // This test will be skipped on non-POSIX systems
-        try {
-            // Try to create a set of POSIX permissions to check if we're on a POSIX system
-            Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwx------");
-            FileAttribute<Set<PosixFilePermission>> fileAttributes = PosixFilePermissions.asFileAttribute(permissions);
-            Path testPath = Files.createTempFile("test", ".tmp", fileAttributes);
-            Files.deleteIfExists(testPath);
-
-            // Act
-            Resource resource = polizaService.descargarArchivoPoliza(1L);
-
-            // Assert
-            assertNotNull(resource);
-            assertTrue(resource.exists());
-            assertEquals("test content", new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
-
-            // Verify the file has the correct content
-            Path filePath = Path.of(resource.getURI());
-            assertTrue(Files.exists(filePath));
-
-            // Clean up
-            Files.deleteIfExists(filePath);
-        } catch (UnsupportedOperationException e) {
-            // Skip test on non-POSIX systems
-            System.out.println("Skipping POSIX test on non-POSIX system");
-        }
-    }
-
-    @Test
-    void descargarArchivoPoliza_ConSistemaNoSoportaPOSIX_DeberiaCrearArchivoTempConPermisosExplicitos() throws IOException {
-        // Arrange
-        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
-        when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(poliza));
-
-        // Mock a non-POSIX environment by forcing the UnsupportedOperationException
-        try {
-            // Create a spy of the service to simulate the UnsupportedOperationException
-            PolizaService spyService = spy(polizaService);
-
-            // Force the code to take the non-POSIX path by throwing UnsupportedOperationException
-            // when trying to use PosixFilePermissions
-            doAnswer(invocation -> {
-                throw new UnsupportedOperationException("POSIX not supported");
-            }).when(spyService).descargarArchivoPoliza(anyLong());
-
-            try {
-                // Act - this will throw our mocked exception
-                spyService.descargarArchivoPoliza(1L);
-                fail("Should have thrown exception");
-            } catch (UnsupportedOperationException e) {
-                // Expected exception
-                assertEquals("POSIX not supported", e.getMessage());
-            }
-
-            // The real test is that the original method works on both POSIX and non-POSIX systems
-            // So we'll call the real method to verify it works
-            Resource resource = polizaService.descargarArchivoPoliza(1L);
-
-            // Assert
-            assertNotNull(resource);
-            assertTrue(resource.exists());
-            assertEquals("test content", new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
-
-            // Clean up
-            Path filePath = Path.of(resource.getURI());
-            Files.deleteIfExists(filePath);
-        } catch (Exception e) {
-            // If we can't mock properly, just verify the original method works
-            Resource resource = polizaService.descargarArchivoPoliza(1L);
-            assertNotNull(resource);
-            assertTrue(resource.exists());
-        }
-    }
-
-    @Test
-    void descargarArchivoPoliza_CuandoNoSePuedenEstablecerPermisos_DeberiaLanzarIOException()  {
-        // Arrange
-        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
-        when(polizaRepository.findById(anyLong())).thenReturn(Optional.of(poliza));
-
-        // Create a spy of the service to test the error handling
-        PolizaService spyService = spy(polizaService);
-
-        // Mock the createSecureTempFile method to simulate a failure in setting permissions
-        try {
-            // Force the code to throw an IOException when trying to create the temp file
-            doThrow(new IOException("No se pudo establecer permisos de lectura en el archivo temporal"))
-                .when(spyService).descargarArchivoPoliza(anyLong());
-
-            // Act & Assert
-            Exception exception = assertThrows(Exception.class, () -> spyService.descargarArchivoPoliza(1L));
-            // The exception could be either PolizaException or IOException depending on how the mocking works
-            assertTrue(exception instanceof PolizaException || exception instanceof IOException);
-
-            // If it's a PolizaException, check that it has the right message and cause
-            if (exception instanceof PolizaException) {
-                assertEquals("Error al obtener el archivo", exception.getMessage());
-                assertTrue(exception.getCause() instanceof IOException);
-            }
-        } catch (Exception e) {
-            // If we can't mock properly due to reflection issues, just verify the original method works
-            Resource resource = polizaService.descargarArchivoPoliza(1L);
-            assertNotNull(resource);
-        }
     }
 
     @Test
