@@ -75,4 +75,42 @@ public class CatalogoDeMensajes {
     public static final String ERROR_OBTENER_ARCHIVO = "Error al obtener el archivo";
     public static final String SIN_PERMISO_ELIMINAR_POLIZA = "No tienes permiso para eliminar esta póliza";
     public static final String POLIZA_ELIMINADA_CORRECTAMENTE = "Póliza eliminada correctamente";
+
+    // Mensajes de Validación
+    public static final String USERNAME_REQUERIDO = "El username no puede ser nulo o vacío";
+    public static final String PASSWORD_REQUERIDO = "La contraseña no puede ser nula o vacía";
+    public static final String EMAIL_REQUERIDO = "El email no puede ser nulo o vacío";
+    public static final String NOMBRE_COMPLETO_REQUERIDO = "El nombre completo no puede ser nulo o vacío";
+    public static final String NUMERO_IDENTIFICACION_REQUERIDO = "El número de identificación no puede ser nulo o vacío";
+    public static final String TIPO_IDENTIFICACION_REQUERIDO = "El tipo de identificación no puede ser nulo o vacío";
+    public static final String TELEFONO_REQUERIDO = "El teléfono no puede ser nulo o vacío";
+    public static final String TOKEN_REQUERIDO = "El token no puede ser nulo o vacío";
+    public static final String NUEVA_PASSWORD_REQUERIDA = "La nueva contraseña no puede ser nula o vacía";
+    public static final String PASSWORD_ACTUAL_REQUERIDA = "La contraseña actual no puede ser nula";
+    public static final String ID_REQUERIDO = "El id no puede ser nulo";
+    public static final String CALIFICACION_MINIMA = "La calificación mínima es 1";
+    public static final String CALIFICACION_MAXIMA = "La calificación máxima es 5";
+
+    // Mensajes de Validación para Publicaciones
+    public static final String TITULO_REQUERIDO = "El título no puede ser nulo o vacío";
+    public static final String DESCRIPCION_REQUERIDA = "La descripción no puede ser nula o vacía";
+    public static final String TIPO_PUBLICACION_REQUERIDO = "El tipo de publicación no puede ser nulo";
+    public static final String CATEGORIA_SERVICIO_REQUERIDA = "La categoría de servicio no puede ser nula o vacía";
+    public static final String ZONA_ID_REQUERIDO = "El id de la zona no puede ser nulo";
+    public static final String PUBLICACION_ID_REQUERIDO = "El id de la publicación no puede ser nulo";
+    public static final String MOTIVO_REQUERIDO = "El motivo no puede ser nulo o vacío";
+
+    // Mensajes de Validación para Zonas
+    public static final String CORREGIMIENTO_REQUERIDO = "El corregimiento no puede ser nulo o vacío";
+    public static final String MUNICIPIO_REQUERIDO = "El municipio no puede ser nulo o vacío";
+    public static final String CIUDAD_REQUERIDA = "La ciudad no puede ser nula o vacía";
+    public static final String DEPARTAMENTO_REQUERIDO = "El departamento no puede ser nulo o vacío";
+    public static final String PAIS_REQUERIDO = "El país no puede ser nulo o vacío";
+
+    // Mensajes de Validación para Pólizas
+    public static final String NUMERO_POLIZA_REQUERIDO = "El número de póliza no puede ser nulo o vacío";
+    public static final String NOMBRE_ASEGURADORA_REQUERIDO = "El nombre de la aseguradora no puede ser nulo o vacío";
+    public static final String PRIMA_REQUERIDA = "La prima no puede ser nula";
+    public static final String FECHA_VENCIMIENTO_REQUERIDA = "La fecha de vencimiento no puede ser nula";
+    public static final String TIPO_POLIZA_REQUERIDO = "El tipo de póliza no puede ser nulo o vacío";
 }
