@@ -77,11 +77,8 @@ public class ReporteService implements ReporteUseCase {
             reportes = reporteRepositoryPort.findByProcesado(procesado);
         } else {
 
-            List<Reporte> reportesProcesados = reporteRepositoryPort.findByProcesado(true);
             List<Reporte> reportesNoProcesados = reporteRepositoryPort.findByProcesado(false);
-            reportes = new ArrayList<>();
-            reportes.addAll(reportesProcesados);
-            reportes.addAll(reportesNoProcesados);
+            reportes = new ArrayList<>(reportesNoProcesados);
         }
 
 
