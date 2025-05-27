@@ -16,6 +16,8 @@ spring:
 
   mail: jnqo oafz cjjj grlp
 
+  temp-dir: ./tmp
+
   jpa:
     hibernate:
       ddl-auto: update

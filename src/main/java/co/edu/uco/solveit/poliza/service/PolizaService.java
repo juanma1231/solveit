@@ -11,6 +11,7 @@ import co.edu.uco.solveit.usuario.entity.Usuario;
 import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,6 +33,10 @@ import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCON
 @RequiredArgsConstructor
 public class PolizaService {
 
+    @Value("${app.temp-dir}")
+    private String tempDir;
+
+
     public static final String ADMIN = "ADMIN";
     public static final String POLIZA_NO_ENCONTRADA = "Póliza no encontrada";
     private final PolizaRepository polizaRepository;
@@ -51,6 +56,7 @@ public class PolizaService {
                 .fechaVencimiento(request.fechaVencimiento())
                 .tipoPoliza(request.tipoPoliza())
                 .build();
+
 
         if (archivo != null && !archivo.isEmpty()) {
             try {
@@ -152,7 +158,9 @@ public class PolizaService {
         }
 
         try {
-            Path tempFile = Files.createTempFile("poliza_" + id + "_", "_" + poliza.getNombreArchivo());
+            Path secureTempDir = Path.of(tempDir);
+            Files.createDirectories(secureTempDir);
+            Path tempFile = Files.createTempFile(secureTempDir, "poliza_" + id + "_", "_" + poliza.getNombreArchivo());
             Files.write(tempFile, poliza.getArchivoData());
 
             Resource resource = new UrlResource(tempFile.toUri());
