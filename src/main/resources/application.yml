@@ -14,9 +14,20 @@ spring:
       maximum-pool-size: 10
       connection-timeout: 30000
 
-  mail: jnqo oafz cjjj grlp
+  mail:
+    password: jnqo oafz cjjj grlp
+    username: smtp.gmail.com
 
-  temp-dir: ./tmp
+  jwt:
+    origin:
+      local: http://localhost:8081
+      expo: https://solveit--u61lphwrdd.expo.app/
+      prod: https://solveit.expo.app
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration: 86400000
+
+
+
 
   jpa:
     hibernate:

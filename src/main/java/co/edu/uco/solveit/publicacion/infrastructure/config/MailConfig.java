@@ -10,8 +10,11 @@ import java.util.Properties;
 
 @Configuration
 public class MailConfig {
-    @Value("${spring.mail}")
+    @Value("${spring.mail.password}")
     String token;
+
+    @Value("${spring.mail.username}")
+    String username;
 
     @Bean
     public JavaMailSender javaMailSender() {
@@ -20,7 +23,7 @@ public class MailConfig {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("itsolve3@gmail.com");
+        mailSender.setUsername(username);
         mailSender.setPassword(token);
         
         Properties props = mailSender.getJavaMailProperties();

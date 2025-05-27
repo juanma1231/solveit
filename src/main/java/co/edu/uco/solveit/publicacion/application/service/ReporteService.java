@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.publicacion.application.service;
 
+import co.edu.uco.solveit.common.CatalogoDeMensajes;
 import co.edu.uco.solveit.publicacion.application.dto.ReporteResponse;
 import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
 import co.edu.uco.solveit.publicacion.domain.model.EstadoPublicacion;
@@ -32,7 +33,7 @@ public class ReporteService implements ReporteUseCase {
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         if (publicacion.getEstado() != EstadoPublicacion.REPORTADA) {
-            throw new PublicacionException("La publicación no está reportada");
+            throw new PublicacionException(CatalogoDeMensajes.PUBLICACION_NO_REPORTADA);
         }
 
         publicacion.setEstado(EstadoPublicacion.PUBLICADA);
@@ -41,7 +42,7 @@ public class ReporteService implements ReporteUseCase {
         marcarComoProcesadoLosReportesBy(publicacionId);
 
         return MessageResponse.builder()
-                .message("Reportes cancelados y publicación habilitada correctamente")
+                .message(CatalogoDeMensajes.REPORTES_CANCELADOS_PUBLICACION_HABILITADA)
                 .success(true)
                 .build();
     }
@@ -54,7 +55,7 @@ public class ReporteService implements ReporteUseCase {
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         if (publicacion.getEstado() == EstadoPublicacion.PUBLICADA) {
-            throw new PublicacionException("La publicación ya está habilitada");
+            throw new PublicacionException(CatalogoDeMensajes.PUBLICACION_YA_HABILITADA);
         }
 
         publicacion.setEstado(EstadoPublicacion.PUBLICADA);
@@ -63,7 +64,7 @@ public class ReporteService implements ReporteUseCase {
         marcarComoProcesadoLosReportesBy(publicacionId);
 
         return MessageResponse.builder()
-                .message("Publicación habilitada correctamente")
+                .message(CatalogoDeMensajes.PUBLICACION_HABILITADA_CORRECTAMENTE)
                 .success(true)
                 .build();
     }
@@ -103,7 +104,7 @@ public class ReporteService implements ReporteUseCase {
         usuarioApi.getCurrentUserId();
 
         Reporte reporte = reporteRepositoryPort.findById(reporteId)
-                .orElseThrow(() -> new PublicacionException("Reporte no encontrado"));
+                .orElseThrow(() -> new PublicacionException(CatalogoDeMensajes.REPORTE_NO_ENCONTRADO));
 
         return mapToReporteResponse(reporte);
     }
@@ -121,7 +122,7 @@ public class ReporteService implements ReporteUseCase {
         marcarComoProcesadoLosReportesBy(publicacionId);
 
         return MessageResponse.builder()
-                .message("Publicación bloqueada permanentemente")
+                .message(CatalogoDeMensajes.PUBLICACION_BLOQUEADA_PERMANENTEMENTE)
                 .success(true)
                 .build();
     }

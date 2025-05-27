@@ -59,7 +59,7 @@ public class ChatMessageService {
     public void deliverHistoricalMessages(String userId) {
         log.debug("Delivering historical messages to {}", userId);
 
-        // Find all messages where the user is either the sender or recipient
+
         List<ChatMessageEntity> historicalMessages = chatMessageRepository
                 .findAllMessagesInvolvingUser(userId);
 

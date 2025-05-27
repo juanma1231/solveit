@@ -28,13 +28,13 @@ public class SolicitudRepositoryAdapter implements SolicitudRepositoryPort {
     public Solicitud save(Solicitud solicitud) {
         SolicitudEntity entity = SolicitudMapper.toEntity(solicitud);
 
-        // Set the publicacion if it's not set but we have the ID
+
         if (entity.getPublicacion() == null && solicitud.getPublicacionId() != null) {
             publicacionRepository.findById(solicitud.getPublicacionId())
                     .ifPresent(entity::setPublicacion);
         }
 
-        // Set the usuario if it's not set but we have the ID
+
         if (entity.getUsuarioQueSolicita() == null && solicitud.getUsuarioInteresadoId() != null) {
             usuarioApi.findById(solicitud.getUsuarioInteresadoId())
                     .ifPresent(entity::setUsuarioQueSolicita);

@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.publicacion.application.service;
 
+import co.edu.uco.solveit.common.CatalogoDeMensajes;
 import co.edu.uco.solveit.publicacion.application.dto.CrearSolicitudRequest;
 import co.edu.uco.solveit.publicacion.application.dto.SolicitudResponse;
 import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
@@ -25,8 +26,8 @@ import static co.edu.uco.solveit.publicacion.application.service.PublicacionServ
 @RequiredArgsConstructor
 public class SolicitudService implements SolicitudUseCase {
 
-    public static final String SOLICITUD_NO_ENCONTRADO = "Solicitud no encontrado";
-    public static final String USUARIO_INTERESADO_NO_ENCONTRADO = "Usuario interesado no encontrado";
+    public static final String SOLICITUD_NO_ENCONTRADO = CatalogoDeMensajes.SOLICITUD_NO_ENCONTRADA;
+    public static final String USUARIO_INTERESADO_NO_ENCONTRADO = CatalogoDeMensajes.USUARIO_INTERESADO_NO_ENCONTRADO;
 
     private final SolicitudRepositoryPort solicitudRepositoryPort;
     private final PublicacionRepositoryPort publicacionRepositoryPort;
@@ -44,15 +45,15 @@ public class SolicitudService implements SolicitudUseCase {
 
 
         if (publicacion.getUsuarioId().equals(usuarioId)) {
-            throw new PublicacionException("No puedes mostrar interés en tu propia publicación");
+            throw new PublicacionException(CatalogoDeMensajes.NO_INTERES_PROPIA_PUBLICACION);
         }
 
         if(publicacion.getEstado() != EstadoPublicacion.PUBLICADA){
-            throw new PublicacionException("La publicación no está publicada");
+            throw new PublicacionException(CatalogoDeMensajes.PUBLICACION_NO_PUBLICADA);
         }
 
         if (solicitudRepositoryPort.existsByPublicacionIdAndUsuarioInteresadoId(publicacion.getId(), usuarioId)) {
-            throw new PublicacionException("Ya has mostrado interés en esta publicación");
+            throw new PublicacionException(CatalogoDeMensajes.YA_MOSTRADO_INTERES);
         }
 
         Solicitud solicitud = Solicitud.builder()
@@ -68,7 +69,7 @@ public class SolicitudService implements SolicitudUseCase {
         Solicitud interesGuardado = solicitudRepositoryPort.save(solicitud);
 
         Usuario propietario = usuarioApi.findById(publicacion.getUsuarioId())
-                .orElseThrow(() -> new PublicacionException("Usuario propietario no encontrado"));
+                .orElseThrow(() -> new PublicacionException(CatalogoDeMensajes.USUARIO_PROPIETARIO_NO_ENCONTRADO));
 
         emailServicePort.enviarNotificacionNuevaSolicitud(
                 propietario.getEmail(),
@@ -88,7 +89,7 @@ public class SolicitudService implements SolicitudUseCase {
 
 
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
-            throw new PublicacionException("No tienes permiso para ver los intereses de esta publicación");
+            throw new PublicacionException(CatalogoDeMensajes.SIN_PERMISO_VER_INTERESES);
         }
 
         List<Solicitud> intereses = solicitudRepositoryPort.findByPublicacionId(publicacionId);
@@ -132,11 +133,11 @@ public class SolicitudService implements SolicitudUseCase {
 
 
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
-            throw new PublicacionException("No tienes permiso para aceptar este interés");
+            throw new PublicacionException(CatalogoDeMensajes.SIN_PERMISO_ACEPTAR_INTERES);
         }
 
         if (solicitud.getEstado() != EstadoInteres.PENDIENTE) {
-            throw new PublicacionException("Este interés ya ha sido procesado");
+            throw new PublicacionException(CatalogoDeMensajes.INTERES_YA_PROCESADO);
         }
 
 
@@ -152,7 +153,7 @@ public class SolicitudService implements SolicitudUseCase {
         );
 
         return MessageResponse.builder()
-                .message("Interés aceptado correctamente. Se ha habilitado el chat con el usuario interesado.")
+                .message(CatalogoDeMensajes.INTERES_ACEPTADO_CORRECTAMENTE)
                 .success(true)
                 .build();
     }
@@ -169,12 +170,12 @@ public class SolicitudService implements SolicitudUseCase {
 
 
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
-            throw new PublicacionException("No tienes permiso para rechazar este interés");
+            throw new PublicacionException(CatalogoDeMensajes.SIN_PERMISO_RECHAZAR_INTERES);
         }
 
 
         if (solicitud.getEstado() != EstadoInteres.PENDIENTE) {
-            throw new PublicacionException("Este interés ya ha sido procesado");
+            throw new PublicacionException(CatalogoDeMensajes.INTERES_YA_PROCESADO);
         }
 
 
@@ -190,7 +191,7 @@ public class SolicitudService implements SolicitudUseCase {
         );
 
         return MessageResponse.builder()
-                .message("Interés rechazado correctamente. Se ha notificado al usuario interesado.")
+                .message(CatalogoDeMensajes.INTERES_RECHAZADO_CORRECTAMENTE)
                 .success(true)
                 .build();
     }
@@ -206,12 +207,12 @@ public class SolicitudService implements SolicitudUseCase {
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
-            throw new PublicacionException("No tienes permiso para finalizar este interés");
+            throw new PublicacionException(CatalogoDeMensajes.SIN_PERMISO_FINALIZAR_INTERES);
         }
 
 
         if (solicitud.getEstado() != EstadoInteres.ACEPTADO) {
-            throw new PublicacionException("Solo se pueden finalizar intereses que estén en estado aceptado");
+            throw new PublicacionException(CatalogoDeMensajes.SOLO_FINALIZAR_INTERESES_ACEPTADOS);
         }
 
 
@@ -229,7 +230,7 @@ public class SolicitudService implements SolicitudUseCase {
         );
 
         return MessageResponse.builder()
-                .message("Interés finalizado correctamente. Se ha notificado al usuario interesado.")
+                .message(CatalogoDeMensajes.INTERES_FINALIZADO_CORRECTAMENTE)
                 .success(true)
                 .build();
     }
@@ -237,7 +238,7 @@ public class SolicitudService implements SolicitudUseCase {
     @Override
     public SolicitudResponse obtenerSolicitudPorId(Long solicitudId) {
         Solicitud solicitud = solicitudRepositoryPort.findById(solicitudId)
-                .orElseThrow(() -> new PublicacionException("Solicitud no encontrada"));
+                .orElseThrow(() -> new PublicacionException(CatalogoDeMensajes.SOLICITUD_NO_ENCONTRADA));
 
         return mapToInteresResponse(solicitud);
     }

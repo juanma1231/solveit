@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.usuario.service;
 
+import co.edu.uco.solveit.common.CatalogoDeMensajes;
 import co.edu.uco.solveit.usuario.dto.AuthResponse;
 import co.edu.uco.solveit.usuario.dto.LoginRequest;
 import co.edu.uco.solveit.usuario.dto.MessageResponse;
@@ -15,7 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCONTRADO;
+import static co.edu.uco.solveit.common.CatalogoDeMensajes.USUARIO_NO_ENCONTRADO;
 
 @Service
 @RequiredArgsConstructor
@@ -29,11 +30,11 @@ public class AuthService {
     public AuthResponse register(RegistroRequest request) {
 
         if (usuarioRepository.existsByUsername(request.username())) {
-            throw new AuthenticationException("El nombre de usuario ya está en uso");
+            throw new AuthenticationException(CatalogoDeMensajes.USERNAME_YA_EN_USO);
         }
 
         if (usuarioRepository.existsByEmail(request.email())) {
-            throw new AuthenticationException("El email ya está registrado");
+            throw new AuthenticationException(CatalogoDeMensajes.EMAIL_YA_REGISTRADO);
         }
 
         var usuario = Usuario.builder()
@@ -97,7 +98,7 @@ public class AuthService {
 
     public MessageResponse logout() {
         return MessageResponse.builder()
-                .message("Sesión cerrada correctamente")
+                .message(CatalogoDeMensajes.SESION_CERRADA_CORRECTAMENTE)
                 .success(true)
                 .build();
     }

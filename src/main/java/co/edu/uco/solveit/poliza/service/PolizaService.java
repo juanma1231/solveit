@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.poliza.service;
 
+import co.edu.uco.solveit.common.CatalogoDeMensajes;
 import co.edu.uco.solveit.poliza.dto.ActualizarPolizaRequest;
 import co.edu.uco.solveit.poliza.dto.PolizaResponse;
 import co.edu.uco.solveit.poliza.dto.RegistrarPolizaRequest;
@@ -24,7 +25,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 
-import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCONTRADO;
+import static co.edu.uco.solveit.common.CatalogoDeMensajes.USUARIO_NO_ENCONTRADO;
 
 
 @Slf4j
@@ -33,7 +34,7 @@ import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCON
 public class PolizaService {
 
     public static final String ADMIN = "ADMIN";
-    public static final String POLIZA_NO_ENCONTRADA = "Póliza no encontrada";
+    public static final String POLIZA_NO_ENCONTRADA = CatalogoDeMensajes.POLIZA_NO_ENCONTRADA;
     private final PolizaRepository polizaRepository;
     private final UsuarioRepository usuarioRepository;
 
@@ -59,7 +60,7 @@ public class PolizaService {
                 poliza.setArchivoData(archivo.getBytes());
                 poliza.setRutaArchivo(UUID.randomUUID().toString());
             } catch (IOException ex) {
-                throw new PolizaException("No se pudo almacenar el archivo " + archivo.getOriginalFilename(), ex);
+                throw new PolizaException(CatalogoDeMensajes.ERROR_ALMACENAR_ARCHIVO + archivo.getOriginalFilename(), ex);
             }
         }
 
@@ -75,7 +76,7 @@ public class PolizaService {
         Poliza poliza = polizaRepository.findById(id)
                 .orElseThrow(() -> new PolizaException(POLIZA_NO_ENCONTRADA));
         if (!poliza.getTitular().getId().equals(usuario.getId())) {
-            throw new PolizaException("No tienes permiso para actualizar esta póliza");
+            throw new PolizaException(CatalogoDeMensajes.SIN_PERMISO_ACTUALIZAR_POLIZA);
         }
 
         poliza.setNumeroPoliza(request.numeroPoliza());
@@ -92,7 +93,7 @@ public class PolizaService {
                 poliza.setArchivoData(archivo.getBytes());
                 poliza.setRutaArchivo(UUID.randomUUID().toString());
             } catch (IOException ex) {
-                throw new PolizaException("No se pudo almacenar el archivo " + archivo.getOriginalFilename(), ex);
+                throw new PolizaException(CatalogoDeMensajes.ERROR_ALMACENAR_ARCHIVO + archivo.getOriginalFilename(), ex);
             }
         }
 
@@ -114,7 +115,7 @@ public class PolizaService {
 
         if (!usuarioAutenticado.getId().equals(idUsuario) &&
                 !usuarioAutenticado.getRole().name().equals(ADMIN)) {
-            throw new PolizaException("No tienes permiso para ver las pólizas de este usuario");
+            throw new PolizaException(CatalogoDeMensajes.SIN_PERMISO_VER_POLIZAS);
         }
 
         List<Poliza> polizas = polizaRepository.findByTitularId(idUsuario);
@@ -126,7 +127,7 @@ public class PolizaService {
     public List<PolizaResponse> obtenerMisPolizas() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(POLIZA_NO_ENCONTRADA));
+                .orElseThrow(() -> new UsernameNotFoundException(USUARIO_NO_ENCONTRADO));
 
         List<Poliza> polizas = polizaRepository.findByTitular(usuario);
         return polizas.stream()
@@ -144,11 +145,11 @@ public class PolizaService {
 
         if (!poliza.getTitular().getId().equals(usuario.getId()) &&
                 !usuario.getRole().name().equals(ADMIN)) {
-            throw new PolizaException("No tienes permiso para descargar esta póliza");
+            throw new PolizaException(CatalogoDeMensajes.SIN_PERMISO_DESCARGAR_POLIZA);
         }
 
         if (poliza.getArchivoData() == null || poliza.getNombreArchivo() == null) {
-            throw new PolizaException("Esta póliza no tiene un archivo adjunto");
+            throw new PolizaException(CatalogoDeMensajes.POLIZA_SIN_ARCHIVO);
         }
 
         try {
@@ -167,7 +168,7 @@ public class PolizaService {
 
             return resource;
         } catch (IOException ex) {
-            throw new PolizaException("Error al obtener el archivo", ex);
+            throw new PolizaException(CatalogoDeMensajes.ERROR_OBTENER_ARCHIVO, ex);
         }
     }
 
@@ -181,13 +182,13 @@ public class PolizaService {
 
         if (!poliza.getTitular().getId().equals(usuario.getId()) &&
                 !usuario.getRole().name().equals(ADMIN)) {
-            throw new PolizaException("No tienes permiso para eliminar esta póliza");
+            throw new PolizaException(CatalogoDeMensajes.SIN_PERMISO_ELIMINAR_POLIZA);
         }
 
         polizaRepository.delete(poliza);
 
         return MessageResponse.builder()
-                .message("Póliza eliminada correctamente")
+                .message(CatalogoDeMensajes.POLIZA_ELIMINADA_CORRECTAMENTE)
                 .success(true)
                 .build();
     }

@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.usuario.service;
 
+import co.edu.uco.solveit.common.CatalogoDeMensajes;
 import co.edu.uco.solveit.usuario.dto.*;
 import co.edu.uco.solveit.usuario.entity.Calificacion;
 import co.edu.uco.solveit.usuario.entity.Usuario;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UsuarioService {
 
-    public static final String USUARIO_NO_ENCONTRADO = "Usuario no encontrado";
+    public static final String USUARIO_NO_ENCONTRADO = CatalogoDeMensajes.USUARIO_NO_ENCONTRADO;
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
@@ -54,9 +55,8 @@ public class UsuarioService {
         if (request.currentPassword() != null && !request.currentPassword().isEmpty()
                 && request.newPassword() != null && !request.newPassword().isEmpty()) {
 
-            // Verificar contraseña actual
             if (!passwordEncoder.matches(request.currentPassword(), usuario.getPassword())) {
-                throw new UsuarioException("La contraseña actual es incorrecta");
+                throw new UsuarioException(CatalogoDeMensajes.CONTRASENA_INCORRECTA);
             }
 
             usuario.setPassword(passwordEncoder.encode(request.newPassword()));
@@ -65,7 +65,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
         return MessageResponse.builder()
-                .message("Datos actualizados correctamente")
+                .message(CatalogoDeMensajes.DATOS_ACTUALIZADOS_CORRECTAMENTE)
                 .success(true)
                 .build();
     }
@@ -73,7 +73,7 @@ public class UsuarioService {
     public MessageResponse solicitarResetPassword(SolicitudResetPasswordRequest request) {
 
         Usuario usuario = usuarioRepository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("No existe un usuario con ese email"));
+                .orElseThrow(() -> new RuntimeException(CatalogoDeMensajes.USUARIO_EMAIL_NO_EXISTE));
 
         String token = UUID.randomUUID().toString();
         usuario.setTokenRecuperacion(token);
@@ -82,7 +82,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
         return MessageResponse.builder()
-                .message("Se ha enviado un correo con instrucciones para restablecer tu contraseña")
+                .message(CatalogoDeMensajes.CORREO_INSTRUCCIONES_ENVIADO)
                 .success(true)
                 .build();
     }
@@ -90,11 +90,11 @@ public class UsuarioService {
     public MessageResponse resetPassword(ResetPasswordRequest request) {
 
         Usuario usuario = usuarioRepository.findByTokenRecuperacion(request.token())
-                .orElseThrow(() -> new UsuarioException("Token inválido o expirado"));
+                .orElseThrow(() -> new UsuarioException(CatalogoDeMensajes.TOKEN_INVALIDO_EXPIRADO));
 
         // Verificar que el token no haya expirado
         if (usuario.getExpiracionTokenRecuperacion().isBefore(LocalDateTime.now())) {
-            throw new UsuarioException("El token ha expirado");
+            throw new UsuarioException(CatalogoDeMensajes.TOKEN_EXPIRADO);
         }
 
         usuario.setPassword(passwordEncoder.encode(request.newPassword()));
@@ -105,14 +105,14 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
         return MessageResponse.builder()
-                .message("Contraseña actualizada correctamente")
+                .message(CatalogoDeMensajes.CONTRASENA_ACTUALIZADA_CORRECTAMENTE)
                 .success(true)
                 .build();
     }
 
     public MessageResponse calificarUsuario(CalificarUsuarioRequest request) {
         Usuario usuario = usuarioRepository.findById(request.id())
-                .orElseThrow(() -> new RuntimeException("No existe un usuario con ese email"));
+                .orElseThrow(() -> new RuntimeException(CatalogoDeMensajes.USUARIO_EMAIL_NO_EXISTE));
 
         Calificacion calificacion = Calificacion.builder()
                 .usuario(usuario)
@@ -121,7 +121,7 @@ public class UsuarioService {
         calificacionRepository.save(calificacion);
 
         return MessageResponse.builder()
-                .message("Usuario calificado con exito")
+                .message(CatalogoDeMensajes.USUARIO_CALIFICADO_EXITO)
                 .success(true)
                 .build();
     }

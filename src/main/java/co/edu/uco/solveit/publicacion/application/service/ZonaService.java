@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.publicacion.application.service;
 
+import co.edu.uco.solveit.common.CatalogoDeMensajes;
 import co.edu.uco.solveit.publicacion.domain.exception.PublicacionException;
 import co.edu.uco.solveit.publicacion.domain.model.Zona;
 import co.edu.uco.solveit.publicacion.domain.port.in.ZonaUseCase;
@@ -35,7 +36,7 @@ public class ZonaService implements ZonaUseCase {
     @Override
     public ZonaResponse actualizarZona(Long id, ZonaRequest request) {
         Zona zona = zonaRepositoryPort.findById(id)
-                .orElseThrow(() -> new PublicacionException("Zona no encontrada"));
+                .orElseThrow(() -> new PublicacionException(CatalogoDeMensajes.ZONA_NO_ENCONTRADA));
 
         zona.setCorregimiento(request.corregimiento());
         zona.setMunicipio(request.municipio());
@@ -50,7 +51,7 @@ public class ZonaService implements ZonaUseCase {
     @Override
     public ZonaResponse obtenerZona(Long id) {
         Zona zona = zonaRepositoryPort.findById(id)
-                .orElseThrow(() -> new PublicacionException("Zona no encontrada"));
+                .orElseThrow(() -> new PublicacionException(CatalogoDeMensajes.ZONA_NO_ENCONTRADA));
         return mapToZonaResponse(zona);
     }
 
@@ -64,7 +65,7 @@ public class ZonaService implements ZonaUseCase {
     @Override
     public void eliminarZona(Long id) {
         if (!zonaRepositoryPort.existsById(id)) {
-            throw new PublicacionException("Zona no encontrada");
+            throw new PublicacionException(CatalogoDeMensajes.ZONA_NO_ENCONTRADA);
         }
         zonaRepositoryPort.deleteById(id);
     }

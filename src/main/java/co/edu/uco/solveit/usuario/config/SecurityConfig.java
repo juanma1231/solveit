@@ -2,6 +2,7 @@ package co.edu.uco.solveit.usuario.config;
 
 import co.edu.uco.solveit.usuario.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -24,6 +25,15 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+
+    @Value("${spring.jwt.origin.local}")
+    String allowOriginsLocal;
+
+    @Value("${spring.jwt.origin.expo}")
+    String allowOriginsExpo;
+
+    @Value("${spring.jwt.origin.prod}")
+    String allowOriginsProd;
 
     @SuppressWarnings("squid:S4502")
     @Bean
@@ -53,9 +63,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("http://localhost:8081");
-        configuration.addAllowedOriginPattern("https://solveit--u61lphwrdd.expo.app/");
-        configuration.addAllowedOriginPattern("https://solveit.expo.app");
+        configuration.addAllowedOriginPattern(allowOriginsLocal);
+        configuration.addAllowedOriginPattern(allowOriginsExpo);
+        configuration.addAllowedOriginPattern(allowOriginsProd);
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);

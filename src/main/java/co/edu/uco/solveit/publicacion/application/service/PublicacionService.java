@@ -1,5 +1,6 @@
 package co.edu.uco.solveit.publicacion.application.service;
 
+import co.edu.uco.solveit.common.CatalogoDeMensajes;
 import co.edu.uco.solveit.publicacion.application.dto.ActualizarPublicacionRequest;
 import co.edu.uco.solveit.publicacion.application.dto.CrearPublicacionRequest;
 import co.edu.uco.solveit.publicacion.application.dto.PublicacionResponse;
@@ -28,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PublicacionService implements PublicacionUseCase {
 
-    public static final String PUBLICACION_NO_ENCONTRADA = "Publicación no encontrada";
+    public static final String PUBLICACION_NO_ENCONTRADA = CatalogoDeMensajes.PUBLICACION_NO_ENCONTRADA;
     private final PublicacionRepositoryPort publicacionRepositoryPort;
     private final ZonaRepositoryPort zonaRepositoryPort;
     private final ReporteRepositoryPort reporteRepositoryPort;
@@ -41,7 +42,7 @@ public class PublicacionService implements PublicacionUseCase {
         String nombreUsuario = usuarioApi.getCurrentUserFullName();
 
         Zona zona = zonaRepositoryPort.findById(request.zonaId())
-                .orElseThrow(() -> new PublicacionException("Zona no encontrada"));
+                .orElseThrow(() -> new PublicacionException(CatalogoDeMensajes.ZONA_NO_ENCONTRADA));
 
         Publicacion publicacion = Publicacion.builder()
                 .titulo(request.titulo())
@@ -67,23 +68,23 @@ public class PublicacionService implements PublicacionUseCase {
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
-            throw new PublicacionException("No tienes permiso para actualizar esta publicación");
+            throw new PublicacionException(CatalogoDeMensajes.SIN_PERMISO_ACTUALIZAR_PUBLICACION);
         }
 
         if (publicacion.getEstado() == EstadoPublicacion.CANCELADA ||
                 publicacion.getEstado() == EstadoPublicacion.BLOQUEADA) {
-            throw new PublicacionException("No se puede actualizar una publicación cancelada o bloqueada");
+            throw new PublicacionException(CatalogoDeMensajes.PUBLICACION_CANCELADA_BLOQUEADA);
         }
 
         List<EstadoInteres> estadosVigentes = List.of(EstadoInteres.PENDIENTE, EstadoInteres.ACEPTADO);
         List<Solicitud> interesesVigentes = solicitudRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
 
         if (!interesesVigentes.isEmpty()) {
-            throw new PublicacionException("No se puede actualizar una publicación que tiene intereses vigentes");
+            throw new PublicacionException(CatalogoDeMensajes.PUBLICACION_CON_INTERESES_VIGENTES);
         }
 
         Zona zona = zonaRepositoryPort.findById(request.zonaId())
-                .orElseThrow(() -> new PublicacionException("Zona no encontrada"));
+                .orElseThrow(() -> new PublicacionException(CatalogoDeMensajes.ZONA_NO_ENCONTRADA));
 
         publicacion.setTitulo(request.titulo());
         publicacion.setDescripcion(request.descripcion());
@@ -135,11 +136,11 @@ public class PublicacionService implements PublicacionUseCase {
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         if (!publicacion.getUsuarioId().equals(usuarioId)) {
-            throw new PublicacionException("No tienes permiso para cancelar esta publicación");
+            throw new PublicacionException(CatalogoDeMensajes.SIN_PERMISO_CANCELAR_PUBLICACION);
         }
 
         if (publicacion.getEstado() == EstadoPublicacion.CANCELADA) {
-            throw new PublicacionException("La publicación ya está cancelada");
+            throw new PublicacionException(CatalogoDeMensajes.PUBLICACION_YA_CANCELADA);
         }
 
 
@@ -147,14 +148,14 @@ public class PublicacionService implements PublicacionUseCase {
         List<Solicitud> interesesVigentes = solicitudRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
 
         if (!interesesVigentes.isEmpty()) {
-            throw new PublicacionException("No se puede cancelar una publicación que tiene intereses vigentes");
+            throw new PublicacionException(CatalogoDeMensajes.NO_CANCELAR_CON_INTERESES_VIGENTES);
         }
 
         publicacion.setEstado(EstadoPublicacion.CANCELADA);
         publicacionRepositoryPort.save(publicacion);
 
         return MessageResponse.builder()
-                .message("Publicación cancelada correctamente")
+                .message(CatalogoDeMensajes.PUBLICACION_CANCELADA_CORRECTAMENTE)
                 .success(true)
                 .build();
     }
@@ -168,7 +169,7 @@ public class PublicacionService implements PublicacionUseCase {
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
         if (reporteRepositoryPort.existsByPublicacionIdAndUsuarioId(publicacion.getId(), usuarioId)) {
-            throw new PublicacionException("Ya has reportado esta publicación anteriormente");
+            throw new PublicacionException(CatalogoDeMensajes.YA_REPORTADO_PUBLICACION);
         }
 
         Reporte reporte = Reporte.builder()
@@ -188,7 +189,7 @@ public class PublicacionService implements PublicacionUseCase {
         }
 
         return MessageResponse.builder()
-                .message("Publicación reportada correctamente")
+                .message(CatalogoDeMensajes.PUBLICACION_REPORTADA_CORRECTAMENTE)
                 .success(true)
                 .build();
     }

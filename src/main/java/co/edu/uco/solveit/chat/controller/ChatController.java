@@ -4,6 +4,7 @@ import co.edu.uco.solveit.chat.model.ChatMessage;
 import co.edu.uco.solveit.chat.model.MessageType;
 import co.edu.uco.solveit.chat.service.ChatMessageService;
 import co.edu.uco.solveit.chat.service.UserStatusService;
+import co.edu.uco.solveit.common.CatalogoDeMensajes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -56,7 +57,7 @@ public class ChatController {
                         .type(MessageType.JOIN)
                         .sender("system")
                         .recipient(chatMessage.getSender())
-                        .content("Conectado con exito a la sala de chat")
+                        .content(CatalogoDeMensajes.CONECTADO_CHAT_EXITO)
                         .timestamp(LocalDateTime.now())
                         .build()
         );

@@ -160,7 +160,7 @@ class ChatControllerTest {
                     return message.getType() == MessageType.JOIN &&
                            message.getSender().equals("system") &&
                            message.getRecipient().equals("sender") &&
-                           message.getContent().equals("Connected successfully") &&
+                           message.getContent().equals("Conectado con exito a la sala de chat") &&
                            message.getTimestamp() != null;
                 })
         );
