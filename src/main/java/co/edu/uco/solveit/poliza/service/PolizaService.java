@@ -11,7 +11,6 @@ import co.edu.uco.solveit.usuario.entity.Usuario;
 import co.edu.uco.solveit.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCONTRADO;
@@ -32,10 +35,6 @@ import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCON
 @Service
 @RequiredArgsConstructor
 public class PolizaService {
-
-    @Value("${spring.temp-dir:./tmp}")
-    private String tempDir;
-
 
     public static final String ADMIN = "ADMIN";
     public static final String POLIZA_NO_ENCONTRADA = "Póliza no encontrada";
@@ -56,7 +55,6 @@ public class PolizaService {
                 .fechaVencimiento(request.fechaVencimiento())
                 .tipoPoliza(request.tipoPoliza())
                 .build();
-
 
         if (archivo != null && !archivo.isEmpty()) {
             try {
@@ -158,21 +156,16 @@ public class PolizaService {
         }
 
         try {
-            Path secureTempDir;
-            if (tempDir == null || tempDir.trim().isEmpty()) {
-                secureTempDir = Files.createTempDirectory("polizas_temp");
-            } else {
-                secureTempDir = Path.of(tempDir);
-                Files.createDirectories(secureTempDir);
-            }
-            Path tempFile = Files.createTempFile(secureTempDir, "poliza_" + id + "_", "_" + poliza.getNombreArchivo());
+            Path tempFile = createSecureTempFile(id, poliza.getNombreArchivo());
             Files.write(tempFile, poliza.getArchivoData());
 
             Resource resource = new UrlResource(tempFile.toUri());
 
+            // Create a final copy of tempFile for use in the lambda
+            final Path finalTempFile = tempFile;
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
-                    Files.deleteIfExists(tempFile);
+                    Files.deleteIfExists(finalTempFile);
                 } catch (IOException e) {
                     log.error("Error al eliminar el archivo temporal", e);
                 }
@@ -181,6 +174,37 @@ public class PolizaService {
             return resource;
         } catch (IOException ex) {
             throw new PolizaException("Error al obtener el archivo", ex);
+        }
+    }
+
+    /**
+     * Creates a secure temporary file with appropriate permissions.
+     * 
+     * @param id The ID to include in the file name
+     * @param fileName The original file name to include in the temporary file name
+     * @return A Path object representing the created temporary file
+     * @throws IOException If an I/O error occurs
+     */
+    private Path createSecureTempFile(Long id, String fileName) throws IOException {
+        try {
+
+            Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwx------");
+            FileAttribute<Set<PosixFilePermission>> fileAttributes = PosixFilePermissions.asFileAttribute(permissions);
+            return Files.createTempFile("poliza_" + id + "_", "_" + fileName, fileAttributes);
+        } catch (UnsupportedOperationException e) {
+            Path tempFile = Files.createTempFile("poliza_" + id + "_", "_" + fileName);
+
+            if (!tempFile.toFile().setReadable(true, true)) {  // Only owner can read
+                throw new IOException("No se pudo establecer permisos de lectura en el archivo temporal");
+            }
+            if (!tempFile.toFile().setWritable(true, true)) {  // Only owner can write
+                throw new IOException("No se pudo establecer permisos de escritura en el archivo temporal");
+            }
+            if (!tempFile.toFile().setExecutable(true, true)) {  // Only owner can execute
+                throw new IOException("No se pudo establecer permisos de ejecución en el archivo temporal");
+            }
+
+            return tempFile;
         }
     }
 
