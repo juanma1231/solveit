@@ -142,7 +142,7 @@ public class PublicacionService implements PublicacionUseCase {
             throw new PublicacionException("La publicación ya está cancelada");
         }
 
-        // Verificar si existen intereses pendientes o aceptados para esta publicación
+
         List<EstadoInteres> estadosVigentes = List.of(EstadoInteres.ACEPTADO);
         List<Solicitud> interesesVigentes = solicitudRepositoryPort.findByPublicacionIdAndEstadoIn(id, estadosVigentes);
 
@@ -167,7 +167,6 @@ public class PublicacionService implements PublicacionUseCase {
         Publicacion publicacion = publicacionRepositoryPort.findById(id)
                 .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
 
-        // Verificar si el usuario ya ha reportado esta publicación
         if (reporteRepositoryPort.existsByPublicacionIdAndUsuarioId(publicacion.getId(), usuarioId)) {
             throw new PublicacionException("Ya has reportado esta publicación anteriormente");
         }

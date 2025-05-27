@@ -1,8 +1,9 @@
 ### POST creacion de publicaciones
 @tipoPublicacion1 = OFERTA
-@token1 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjIsInN1YiI6ImpvaG5kb2U0IiwiaWF0IjoxNzQ4MTkxOTk5LCJleHAiOjE3NDgyNzgzOTl9.B2V8yJ_7o4aonSbJwzBB55j3xq3xAoDqKRTbh4DGDsQ
-@token2 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjEsInN1YiI6ImpvaG5kb2UzIiwiaWF0IjoxNzQ4MTE0MjI5LCJleHAiOjE3NDgyMDA2Mjl9.hx3tUC6ACizAwnX6aFTJSOywLOjkxQ1YIl-kcleqB7c
-POST https://solveit-app-bmbgbxcheedfanbd.eastus2-01.azurewebsites.net/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion1}}
+@token1 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjYsInN1YiI6ImpvaG5kb2UiLCJpYXQiOjE3NDgzMDI0ODksImV4cCI6MTc0ODM4ODg4OX0.6mPJtVrBl2Sri60gqzOj4YoE6dt2c1jnhs9OxGAoRW8
+@token2 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjcsInN1YiI6ImpvaG5kb2UxIiwiaWF0IjoxNzQ4MzAyNTM0LCJleHAiOjE3NDgzODg5MzR9.YLJCWXYIMsaOJQSPmoMGU2uO3124jUb2YLas0GhYDfU
+@token3 = eyJhbGciOiJIUzI1NiJ9.eyJVc2VySWQiOjgsInN1YiI6ImpvaG5kb2UyIiwiaWF0IjoxNzQ4MzAyNTYyLCJleHAiOjE3NDgzODg5NjJ9.AXfR51om_gM-KKxbvR8vkarDZZCX_SgMFB4sC9eRW2A
+POST http://localhost:9595/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion1}}
 Content-Type: application/json
 Authorization: Bearer {{token1}}
 
@@ -35,7 +36,7 @@ GET http://localhost:9595/api/v1/publicaciones/{{id1}}
 ###
 GET http://localhost:9595/api/v1/publicaciones
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token1}}
 
 ###
 GET http://localhost:9595/api/v1/publicaciones?tipoPublicacion={{tipoPublicacion2}}
@@ -53,10 +54,10 @@ Content-Type: application/json
 Authorization: Bearer {{token1}}
 
 ###
-@idRepor = 5
+@idRepor = 4
 POST http://localhost:9595/api/v1/publicaciones/{{idRepor}}/reportar
 Content-Type: application/json
-Authorization: Bearer {{token1}}
+Authorization: Bearer {{token3}}
 
 {
   "motivo": "Contenido inapropiado"
@@ -69,3 +70,19 @@ POST http://localhost:9595/api/v1/publicaciones/{{id3}}/cancelar
 ###
 @id4 = variable value
 POST http://localhost:9595/api/v1/publicaciones/{{id4}}/finalizar
+
+
+###
+GET http://localhost:9595/api/v1/reportes
+Authorization: Bearer {{token3}}
+
+###
+@publicacionId = 4
+POST http://localhost:9595/api/v1/reportes/publicacion/{{publicacionId}}/bloquear
+Content-Type: application/json
+Authorization: Bearer {{token3}}
+
+###
+POST http://localhost:9595/api/v1/reportes/publicacion/{{publicacionId}}/habilitar
+Content-Type: application/json
+Authorization: Bearer {{token3}}

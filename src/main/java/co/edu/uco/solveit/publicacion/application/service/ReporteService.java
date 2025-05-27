@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static co.edu.uco.solveit.publicacion.application.service.PublicacionService.PUBLICACION_NO_ENCONTRADA;
-
 @Service
 @RequiredArgsConstructor
 public class ReporteService implements ReporteUseCase {
@@ -132,8 +131,11 @@ public class ReporteService implements ReporteUseCase {
 
     private void marcarComoProcesadoLosReportesBy(Long publicacionId) {
         List<Reporte> reportes = reporteRepositoryPort.findByPublicacionId(publicacionId);
+        Publicacion publicacion = publicacionRepositoryPort.findById(publicacionId)
+                .orElseThrow(() -> new PublicacionException(PUBLICACION_NO_ENCONTRADA));
         for (Reporte reporte : reportes) {
             reporte.setProcesado(true);
+            reporte.setPublicacion(publicacion);
             reporteRepositoryPort.save(reporte);
         }
     }
