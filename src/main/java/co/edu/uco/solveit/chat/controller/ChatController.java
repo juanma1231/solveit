@@ -56,7 +56,7 @@ public class ChatController {
                         .type(MessageType.JOIN)
                         .sender("system")
                         .recipient(chatMessage.getSender())
-                        .content("Connected successfully")
+                        .content("Conectado con exito a la sala de chat")
                         .timestamp(LocalDateTime.now())
                         .build()
         );

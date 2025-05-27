@@ -181,7 +181,6 @@ public class PublicacionService implements PublicacionUseCase {
 
         reporteRepositoryPort.save(reporte);
 
-        // Si hay más de 3 reportes, marcar la publicación como reportada
         long cantidadReportes = reporteRepositoryPort.countByPublicacionId(publicacion.getId());
         if (cantidadReportes >= 3 && publicacion.getEstado() != EstadoPublicacion.REPORTADA) {
             publicacion.setEstado(EstadoPublicacion.REPORTADA);
