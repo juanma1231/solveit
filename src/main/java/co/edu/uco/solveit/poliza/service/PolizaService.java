@@ -33,7 +33,7 @@ import static co.edu.uco.solveit.usuario.service.UsuarioService.USUARIO_NO_ENCON
 @RequiredArgsConstructor
 public class PolizaService {
 
-    @Value("${app.temp-dir}")
+    @Value("${spring.temp-dir:./tmp}")
     private String tempDir;
 
 
@@ -158,8 +158,13 @@ public class PolizaService {
         }
 
         try {
-            Path secureTempDir = Path.of(tempDir);
-            Files.createDirectories(secureTempDir);
+            Path secureTempDir;
+            if (tempDir == null || tempDir.trim().isEmpty()) {
+                secureTempDir = Files.createTempDirectory("polizas_temp");
+            } else {
+                secureTempDir = Path.of(tempDir);
+                Files.createDirectories(secureTempDir);
+            }
             Path tempFile = Files.createTempFile(secureTempDir, "poliza_" + id + "_", "_" + poliza.getNombreArchivo());
             Files.write(tempFile, poliza.getArchivoData());
 
