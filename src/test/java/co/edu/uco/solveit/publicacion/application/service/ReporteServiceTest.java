@@ -163,7 +163,6 @@ class ReporteServiceTest {
     void listarReportes_SinFiltro_DeberiaRetornarTodosLosReportes() {
         // Arrange
         when(usuarioApi.getCurrentUserId()).thenReturn(1L);
-        when(reporteRepositoryPort.findByProcesado(true)).thenReturn(Collections.emptyList());
         when(reporteRepositoryPort.findByProcesado(false)).thenReturn(Collections.singletonList(reporte));
         when(publicacionRepositoryPort.findById(anyLong())).thenReturn(Optional.of(publicacion));
 
